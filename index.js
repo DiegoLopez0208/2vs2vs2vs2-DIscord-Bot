@@ -1,20 +1,24 @@
 import { promises as fs } from "fs";
 import path from "path";
+import { fileURLToPath } from "url";
 import {
   Client,
   Collection,
   GatewayIntentBits,
-  ClientEvents,
 } from "discord.js";
 import dotenv from 'dotenv'
 dotenv.config()
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const token = process.env.TOKEN
 
+console.log(token);
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
 client.commands = new Collection();
+
 const foldersPath = path.join(__dirname, "commands");
 
 try {
@@ -38,11 +42,11 @@ try {
     }
   }
 
-  client.once(ClientEvents.Ready, () => {
+  client.once('ready', () => {
     console.log("Ready!");
   });
 
-  client.on(ClientEvents.InteractionCreate, async (interaction) => {
+  client.on('iteractionCreate', async (interaction) => {
     if (!interaction.isCommand()) return;
 
     const command = client.commands.get(interaction.commandName);
