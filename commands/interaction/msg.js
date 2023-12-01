@@ -1,4 +1,3 @@
-import { log } from 'console';
 import pkg from 'discord.js';
 const { SlashCommandBuilder, MessageEmbed } = pkg;
 import { promises as fs } from 'fs';

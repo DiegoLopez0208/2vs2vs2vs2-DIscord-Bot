@@ -1,6 +1,7 @@
 import pkg from 'discord.js';
 const { SlashCommandBuilder, MessageEmbed } = pkg;
-//import axios from 'axios';
+import { UserSchema } from '../../Schemas/userSchema.js';
+import axios from 'axios';
 
 export const data = new SlashCommandBuilder()
   .setName('inscription')
@@ -11,8 +12,7 @@ export const data = new SlashCommandBuilder()
 export async function execute(interaction) {
   const gameName = interaction.options.getString('nombreriot');
   const tag = interaction.options.getString('tag');
-
-
+  
   if (!gameName) {
     return interaction.reply('¡Por favor, menciona a un usuario válido!');
   }
@@ -20,6 +20,12 @@ export async function execute(interaction) {
     return interaction.reply('Por favor, ingresa un mensaje para mostrar en el embed.');
   }
 
-  console.log(gameName);
-  console.log(tag);
+  const { data } = await axios.get(`https://americas.api.riotgames.com/riot/account/v1/accounts/by-riot-id/${gameName}/${tag}?api_key=RGAPI-55e32b8f-8596-4dd6-bd6b-47d4b9362461`);
+  console.log(data);
+  console.log(interaction.user);
+
+  const nuevoUser = new UserSchema({puuid: data.puuid, discordTag: interaction.user.username});
+  
+
+  nuevoUser.save();
 }

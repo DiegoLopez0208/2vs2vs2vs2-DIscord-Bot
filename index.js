@@ -50,7 +50,7 @@ try {
     console.log("✅ The Discord Bot is Ready!");
   });
 
-  client.on('iteractionCreate', async (interaction) => {
+  client.on('interactionCreate', async (interaction) => {
     if (!interaction.isCommand()) return;
 
     const command = client.commands.get(interaction.commandName);
