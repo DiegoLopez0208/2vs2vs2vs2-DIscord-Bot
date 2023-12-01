@@ -2,6 +2,9 @@ import pkg from 'discord.js';
 const { SlashCommandBuilder, MessageEmbed } = pkg;
 import { UserSchema } from '../../Schemas/userSchema.js';
 import axios from 'axios';
+import "../../config/dotenv.js";
+
+
 
 export const data = new SlashCommandBuilder()
   .setName('inscription')
@@ -14,13 +17,15 @@ export async function execute(interaction) {
   const tag = interaction.options.getString('tag');
   
   if (!gameName) {
+
+
     return interaction.reply('¡Por favor, menciona a un usuario válido!');
   }
   if (!tag) {
     return interaction.reply('Por favor, ingresa un mensaje para mostrar en el embed.');
   }
 
-  const { data } = await axios.get(`https://americas.api.riotgames.com/riot/account/v1/accounts/by-riot-id/${gameName}/${tag}?api_key=RGAPI-55e32b8f-8596-4dd6-bd6b-47d4b9362461`);
+  const { data } = await axios.get(`https://americas.api.riotgames.com/riot/account/v1/accounts/by-riot-id/${gameName}/${tag}?api_key=${process.env.RIOT_KEY}`);
   console.log(data);
   console.log(interaction.user);
 
