@@ -1,11 +1,20 @@
-import { REST } from "discord.js";
+/* eslint-disable no-undef */
+import pkg from 'discord.js';
+const {REST} = pkg
 import { Routes } from "discord-api-types/v10";
-import { clientId, guildId, token } from "./config.json";
+import { fileURLToPath } from "url";
 import fs from "fs/promises";
 import path from "path";
+import dotenv from 'dotenv'
+dotenv.config()
+const token = process.env.TOKEN
+const guildId = process.env.GUILD_ID
+const clientId = process.env.CLIENT_ID
 
 const commands = [];
 // Grab all the command folders from the commands directory you created earlier
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const foldersPath = path.join(__dirname, "commands");
 
 try {
