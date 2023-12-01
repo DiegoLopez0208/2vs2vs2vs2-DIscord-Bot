@@ -37,6 +37,6 @@ export async function execute(interaction) {
       embeds: [jornadaEmbed]
     });
   } catch (error) {
-    await interaction.reply(`No se pudo enviar el mensaje a ${user}.`);
+    await interaction.reply(`❌ No se pudo enviar el mensaje a ${user}.`);
   }
 }
