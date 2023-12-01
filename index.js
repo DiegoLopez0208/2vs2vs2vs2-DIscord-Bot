@@ -42,7 +42,7 @@ try {
   }
 
   client.once('ready', () => {
-    console.log("Ready!");
+    console.log("✅ The Discord Bot is Ready!");
   });
 
   client.on('iteractionCreate', async (interaction) => {
