@@ -5,8 +5,8 @@ import { Routes } from "discord-api-types/v10";
 import { fileURLToPath } from "url";
 import fs from "fs/promises";
 import path from "path";
-import dotenv from 'dotenv'
-dotenv.config()
+import "./config/dotenv.js"
+
 const token = process.env.TOKEN
 const guildId = process.env.GUILD_ID
 const clientId = process.env.CLIENT_ID

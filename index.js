@@ -1,17 +1,24 @@
+/* eslint-disable no-undef */
+
 import { promises as fs } from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import { URL } from "url";  // Agrega esta línea
-
 import { Client, Collection, GatewayIntentBits } from "discord.js";
-import dotenv from 'dotenv'
-dotenv.config()
+import "./config/dotenv.js"
+import './mongoose/db.js';
+
+
+
+
+
+const token = process.env.TOKEN
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// eslint-disable-next-line no-undef
-const token = process.env.TOKEN
+
+
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
