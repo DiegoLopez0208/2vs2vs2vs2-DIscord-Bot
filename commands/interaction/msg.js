@@ -1,3 +1,4 @@
+import { log } from 'console';
 import pkg from 'discord.js';
 const { SlashCommandBuilder, MessageEmbed } = pkg;
 import { promises as fs } from 'fs';
@@ -9,6 +10,7 @@ export const data = new SlashCommandBuilder()
   .addStringOption(option => option.setName('mensaje').setDescription('Ingresa el mensaje que quieres mostrar en el embed.'));
 
 export async function execute(interaction) {
+  console.log('ANASHEI');
   const user = interaction.options.getUser('usuario');
   const mensaje = interaction.options.getString('mensaje');
 
