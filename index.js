@@ -1,11 +1,9 @@
 import { promises as fs } from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
-import {
-  Client,
-  Collection,
-  GatewayIntentBits,
-} from "discord.js";
+import { URL } from "url";  // Agrega esta línea
+
+import { Client, Collection, GatewayIntentBits } from "discord.js";
 import dotenv from 'dotenv'
 dotenv.config()
 
@@ -14,7 +12,6 @@ const __dirname = path.dirname(__filename);
 
 // eslint-disable-next-line no-undef
 const token = process.env.TOKEN
-
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
@@ -32,7 +29,8 @@ try {
     );
     for (const file of commandFiles) {
       const filePath = path.join(commandsPath, file);
-      const command = await import(filePath);
+      const fileURL = new URL(`file://${filePath}`);  // Modifica la ruta a una URL válida
+      const command = await import(fileURL);
       if ("data" in command && "execute" in command) {
         client.commands.set(command.data.name, command);
       } else {
