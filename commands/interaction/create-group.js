@@ -2,7 +2,6 @@ import pkg from 'discord.js';
 const { SlashCommandBuilder } = pkg;
 import { GroupSchema } from '../../Schemas/groupSchema.js'
 import { UserSchema } from '../../Schemas/userSchema.js';
-import axios from 'axios';
 import "../../config/dotenv.js";
 
 export const data = new SlashCommandBuilder()
@@ -17,8 +16,12 @@ export async function execute(interaction) {
   const integrante1 = interaction.options.getUser('integrante1');
   const integrante2 = interaction.options.getUser('integrante2');
   const nombreGrupo = interaction.options.getString('nombre_grupo');
+
   if (integrante1.username != interaction.user.username) {
     return interaction.reply({ content: '¡Tu tienes que ser el primer usuario!', ephemeral: true});
+  }
+  if (integrante1.username == integrante2.username){
+    return interaction.reply({ content: 'No puedes usar el mismo usuario 2 veces!', ephemeral: true});
   }
   if (!integrante2) {
     return interaction.reply({ content: 'Por favor, ingresa un usuario valido!', ephemeral: true});
@@ -35,12 +38,10 @@ export async function execute(interaction) {
   }
   /*
     faltaria que verifique que el usuario no este en un grupo ya pero no se como hacerlo xD
-    tambien falta que verifique si el usuario no es tan pelotudo de ponerse 2 veces xD
   
     La verdad tendriamos que hacer una especia de archivo que sea como un handler de errores
     al que le pasemos unos codigos en especifico dependiendo la condicion xd
   */
-
 
   const newGroup = new GroupSchema({
     name: nombreGrupo,
@@ -51,8 +52,5 @@ export async function execute(interaction) {
   })
 
   console.log(newGroup);
-
-    
-
   interaction.reply({ content: '¡uwu!', ephemeral: true});
 }
