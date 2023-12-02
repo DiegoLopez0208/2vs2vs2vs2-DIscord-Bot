@@ -9,6 +9,6 @@ const matchSchema = new Schema({
     position: Number,
 });
 
-const Model = mongoose.model('User', matchSchema);
+const Model = mongoose.model('Match', matchSchema);
 
 export { Model as MatchSchema }
