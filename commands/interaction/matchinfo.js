@@ -42,15 +42,15 @@ export async function execute(interaction) {
       console.log(userInfo);
 
       await interaction.reply(
-        `This user has puuid ${userInfo.puuid} and discordTag ${userInfo.discordTag} and your position  ${participants[0].placement}.`
+        `❌ This user has puuid ${userInfo.puuid} and discordTag ${userInfo.discordTag} and your position  ${participants[0].placement}.`
       );
     } else {
       await interaction.reply(
-        "No user found with the provided puuid and discordTag."
+        "❌ No user found with the provided puuid and discordTag."
       );
     }
   } catch (err) {
-    console.error("Error al recuperar usuarios:", err);
-    await interaction.reply("Error al recuperar información del servidor.");
+    console.error("❌ Error al recuperar usuarios:", err);
+    await interaction.reply("❌ Error al recuperar información del servidor.");
   }
 }

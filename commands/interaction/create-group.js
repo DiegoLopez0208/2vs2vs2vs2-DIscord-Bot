@@ -28,10 +28,10 @@ export async function execute(interaction) {
   const user2 = await UserSchema.findOne({discordTag: integrante2.username});
 
   if(!user1) {
-    return interaction.reply({content: 'No estas inscripto en el evento! usa /inscription para inscribirte!', ephemeral: true });
+    return interaction.reply({content: '❌ No estas inscripto en el evento! usa /inscription para inscribirte!', ephemeral: true });
   }
   if(!user2) {
-    return interaction.reply({content: `El usuario ${integrante2} no esta inscripto al evento! que utilice el comando /inscription para estarlo!`, ephemeral: true});
+    return interaction.reply({content: `❌ El usuario ${integrante2} no esta inscripto al evento! que utilice el comando /inscription para estarlo!`, ephemeral: true});
   }
   /*
     faltaria que verifique que el usuario no este en un grupo ya pero no se como hacerlo xD
