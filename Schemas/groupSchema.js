@@ -9,6 +9,6 @@ const groupSchema = new Schema({
     points: Number
 });
 
-const Model = mongoose.model('User', groupSchema);
+const Model = mongoose.model('Group', groupSchema);
 
 export { Model as GroupSchema }

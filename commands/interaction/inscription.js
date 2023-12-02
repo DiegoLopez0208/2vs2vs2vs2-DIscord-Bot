@@ -5,21 +5,18 @@ import { UserSchema } from '../../Schemas/userSchema.js';
 import axios from 'axios';
 import "../../config/dotenv.js";
 
-
-
 export const data = new SlashCommandBuilder()
   .setName('inscription')
   .setDescription('XD')
   .addStringOption(option => option.setName('nombreriot').setDescription('El nombre de tu cuenta Riot'))
   .addStringOption(option => option.setName('tag').setDescription('El tag de tu cuenta Riot'));
 
+
 export async function execute(interaction) {
   const gameName = interaction.options.getString('nombreriot');
   const tag = interaction.options.getString('tag');
   
   if (!gameName) {
-
-
     return interaction.reply('¡Por favor, menciona a un usuario válido!');
   }
   if (!tag) {
@@ -32,6 +29,5 @@ export async function execute(interaction) {
 
   const nuevoUser = new UserSchema({puuid: data.puuid, discordTag: interaction.user.username});
   
-
   nuevoUser.save();
 }
