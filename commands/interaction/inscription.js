@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import pkg from 'discord.js';
 const { SlashCommandBuilder } = pkg;
 import { UserSchema } from '../../Schemas/userSchema.js';
