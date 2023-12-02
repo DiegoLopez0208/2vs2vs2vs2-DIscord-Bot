@@ -17,17 +17,21 @@ export async function execute(interaction) {
   const tag = interaction.options.getString('tag');
   
   if (!gameName) {
-    return interaction.reply('¡Por favor, menciona a un usuario válido!');
+    return interaction.reply({ content: '¡Por favor, ingresa el nombre de tu Riot ID!', ephemeral: true });
   }
   if (!tag) {
-    return interaction.reply('Por favor, ingresa un mensaje para mostrar en el embed.');
+    return interaction.reply({ content: '¡Por favor, ingresa el tag de tu Riot ID!', ephemeral: true });
+  }
+
+  let user = await UserSchema.findOne({discordTag: interaction.user.username});
+  if(user)
+  {
+    return interaction.reply({ content: 'Ya estas inscripto al evento!', ephemeral: true});
   }
 
   const { data } = await axios.get(`https://americas.api.riotgames.com/riot/account/v1/accounts/by-riot-id/${gameName}/${tag}?api_key=${process.env.RIOT_KEY}`);
-  console.log(data);
-  console.log(interaction.user);
-
-  const nuevoUser = new UserSchema({puuid: data.puuid, discordTag: interaction.user.username});
+  user = new UserSchema({puuid: data.puuid, discordTag: interaction.user.username});
   
-  nuevoUser.save();
+  await user.save();
+  await interaction.reply({content: `${interaction.user} sido inscripto correctamente!`});
 }
