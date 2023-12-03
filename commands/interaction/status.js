@@ -9,7 +9,7 @@ export const data = new SlashCommandBuilder()
 
 export async function execute(interaction) {
   const admin_id_1 = "351907503384166401";
-  const admin_id_2 = 281561896841248769n;
+  const admin_id_2 = "281561896841248769";
   
   if (interaction.user.id != admin_id_1 && interaction.user.id != admin_id_2)
   {
