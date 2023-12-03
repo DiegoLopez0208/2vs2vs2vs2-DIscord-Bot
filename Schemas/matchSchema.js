@@ -6,7 +6,10 @@ const matchSchema = new Schema({
     charSelected: String,
     banSelected: String,
     playedAt: Number,
-    position: Number,
+    placement: Number,
+    matchId: String,
+    puuid: String,
+    discordTag: String
 });
 
 const Model = mongoose.model('Match', matchSchema);

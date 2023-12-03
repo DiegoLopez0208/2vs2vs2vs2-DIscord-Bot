@@ -3,6 +3,8 @@ import axios from "axios";
 import pkg from "discord.js";
 const { SlashCommandBuilder } = pkg;
 import { UserSchema } from "../../Schemas/userSchema.js";
+import { MatchSchema } from "../../Schemas/matchSchema.js";
+
 
 
 export const data = new SlashCommandBuilder()
@@ -73,13 +75,13 @@ export async function execute(interaction) {
         // championBan = participant.ban
       }
     });
-    matchSchema = new matchSchema ({
+    
+    new MatchSchema({
       discordTag: interaction.user.username,
       puuid: userInfo.puuid,
       matchId: lastMatchId,
       placement: placement,
-    });
-    await matchSchema.save();
+    }).save();
     console.log("Placement:", placement);
   } catch (error) {
     console.error("Error:", error);
