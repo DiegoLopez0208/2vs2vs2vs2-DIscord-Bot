@@ -19,12 +19,12 @@ export async function execute(interaction) {
       fetchReply: true,
     });
 
-    const filterReaction = (reaction, user) => {
-      return reaction.emoji.name === "✅" && user.id === interaction.user.id;
+    const filterReaction = (reaction , user) => {
+      return reaction.emoji.name === "✅" && !user.bot
     };
     const collector = message.createReactionCollector({
       filter: filterReaction,
-      time: 6000, // 60 segundos de tiempo de espera
+      time: 60000, // 60 segundos de tiempo de espera
       errors: ["time"],
       max: 1 // Maximo a poder escribir
     });
@@ -50,7 +50,7 @@ export async function execute(interaction) {
 
     const discordTag = interaction.user.username;
     const userInfo = await UserSchema.findOne({ discordTag });
-
+    console.log (userInfo.puuid)
     const getMatchId = await axios.get(
       `https://americas.api.riotgames.com/tft/match/v1/matches/by-puuid/${userInfo.puuid}/ids?count=1&api_key=${process.env.RIOT_KEY}`
     );
@@ -75,7 +75,7 @@ export async function execute(interaction) {
         // championBan = participant.ban
       }
     });
-    
+
     new MatchSchema({
       discordTag: interaction.user.username,
       puuid: userInfo.puuid,
