@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 const { Schema } = mongoose;
 
-const groupSchema = new Schema({
+const teamSchema = new Schema({
     name: String,
     memberid1: { type: Schema.Types.ObjectId, ref: 'User' },
     memberid2: { type: Schema.Types.ObjectId, ref: 'User' },
@@ -9,6 +9,6 @@ const groupSchema = new Schema({
     points: Number
 });
 
-const Model = mongoose.model('Group', groupSchema);
+const Model = mongoose.model('Group', teamSchema);
 
-export { Model as GroupSchema }
+export { Model as TeamSchema }
