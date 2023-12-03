@@ -3,22 +3,21 @@
 import { promises as fs } from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
-import { URL } from "url";  // Agrega esta línea
-import { Client, Collection, GatewayIntentBits } from "discord.js";
-import "./config/dotenv.js"
-import './mongoose/db.js';
+import { URL } from "url";
+import pkg from "discord.js";
+const { Client, Collection, GatewayIntentBits, Partials } = pkg;
+import "./config/dotenv.js";
+import "./mongoose/db.js";
 
-
-
-
-
-const token = process.env.TOKEN
+const token = process.env.TOKEN;
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-
-const client = new Client({ intents: [GatewayIntentBits.Guilds] });
+const client = new Client({
+  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessageReactions],
+  partials: [Partials.Reaction],
+});
 
 client.commands = new Collection();
 
@@ -34,7 +33,7 @@ try {
     );
     for (const file of commandFiles) {
       const filePath = path.join(commandsPath, file);
-      const fileURL = new URL(`file://${filePath}`);  // Modifica la ruta a una URL válida
+      const fileURL = new URL(`file://${filePath}`);
       const command = await import(fileURL);
       if ("data" in command && "execute" in command) {
         client.commands.set(command.data.name, command);
@@ -46,11 +45,11 @@ try {
     }
   }
 
-  client.once('ready', () => {
+  client.once("ready", () => {
     console.log("✅ The Discord Bot is Ready!");
   });
 
-  client.on('interactionCreate', async (interaction) => {
+  client.on("interactionCreate", async (interaction) => {
     if (!interaction.isCommand()) return;
 
     const command = client.commands.get(interaction.commandName);
@@ -63,17 +62,21 @@ try {
       console.error(error);
       if (interaction.replied || interaction.deferred) {
         await interaction.followUp({
-          content: "❌ There was an error while executing this command!",
+          content:
+            "❌ Hubo un error al ejecutar este comando. Por favor, inténtalo de nuevo.",
           ephemeral: true,
         });
       } else {
         await interaction.reply({
-          content: "❌ There was an error while executing this command!",
+          content:
+            "❌ Hubo un error al ejecutar este comando. Por favor, inténtalo de nuevo.",
           ephemeral: true,
         });
       }
     }
   });
+
+
 
   await client.login(token);
 } catch (error) {
