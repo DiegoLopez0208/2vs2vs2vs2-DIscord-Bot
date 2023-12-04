@@ -1,10 +1,9 @@
-/* eslint-disable no-undef */
-
 import { promises as fs } from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import { URL } from "url";
 import pkg from "discord.js";
+
 const { Client, Collection, GatewayIntentBits, Partials } = pkg;
 import "./config/dotenv.js";
 import "./mongoose/db.js";
@@ -15,7 +14,11 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const client = new Client({
-  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessageReactions],
+  intents: [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMessageReactions,
+    GatewayIntentBits.GuildMessages
+  ],
   partials: [Partials.Reaction],
 });
 
@@ -75,8 +78,6 @@ try {
       }
     }
   });
-
-
 
   await client.login(token);
 } catch (error) {

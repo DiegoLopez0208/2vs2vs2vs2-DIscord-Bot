@@ -1,4 +1,4 @@
-/* eslint-disable no-undef */
+
 import pkg from 'discord.js';
 const {REST} = pkg
 import { Routes } from "discord-api-types/v10";

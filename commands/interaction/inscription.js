@@ -1,4 +1,4 @@
-/* eslint-disable no-undef */
+
 import pkg from 'discord.js';
 const { SlashCommandBuilder } = pkg;
 import { UserSchema } from '../../Schemas/userSchema.js';
@@ -54,7 +54,7 @@ export async function execute(interaction) {
     if(!errorResponse)
     {
         const { data } = response;
-        user = new UserSchema({riotName: data.gameName, riotTag: data.tagLine, discordTag: interaction.user.username});
+        user = new UserSchema({riotName: data.gameName, riotTag: data.tagLine, discordTag: interaction.user.username, discordId:interaction.user.id, discordAvatarId:interaction.user.avatar});
 
         await user.save();
         await interaction.reply({content: `${interaction.user} sido inscripto correctamente!`});

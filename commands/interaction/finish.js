@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 import axios from "axios";
 import pkg from "discord.js";
 const { SlashCommandBuilder } = pkg;
@@ -37,6 +36,10 @@ export async function execute(interaction) {
       console.log(`Se obtuvieron ${collected.size} reacciones.`);
       if (collected.size >= 1) {
         console.log (collected.size)
+        message.delete()
+        interaction.channel.send ({
+          content: "Reacciones terminadas"
+        })
       } else {
         interaction.channel.send(
           `No se obtuvo la cantidad requerida de reacciones.`

@@ -1,5 +1,5 @@
 import pkg from 'discord.js';
-const { SlashCommandBuilder, MessageEmbed } = pkg;
+const { SlashCommandBuilder } = pkg;
 import axios from 'axios';
 import "../../config/dotenv.js";
 
