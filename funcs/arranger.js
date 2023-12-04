@@ -1,4 +1,4 @@
-export const arrangeTeams = (teams) => {
+const arrangeTeams = (teams) => {
     let auxTeam;
 
     for (let i = 0; i < teams.length-1; i++) {
@@ -11,3 +11,5 @@ export const arrangeTeams = (teams) => {
         }        
     }
 }
+
+export default arrangeTeams;
