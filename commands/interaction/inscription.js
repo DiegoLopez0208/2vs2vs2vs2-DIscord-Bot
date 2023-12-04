@@ -54,7 +54,7 @@ export async function execute(interaction) {
     if(!errorResponse)
     {
         const { data } = response;
-        user = new UserSchema({riotName: data.gameName, riotTag: data.tag, discordTag: interaction.user.username});
+        user = new UserSchema({riotName: data.gameName, riotTag: data.tagLine, discordTag: interaction.user.username});
 
         await user.save();
         await interaction.reply({content: `${interaction.user} sido inscripto correctamente!`});

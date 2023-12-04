@@ -50,17 +50,24 @@ export async function execute(interaction) {
 
     const discordTag = interaction.user.username;
     const userInfo = await UserSchema.findOne({ discordTag });
-    console.log (userInfo.puuid)
-    const getMatchId = await axios.get(
-      `https://americas.api.riotgames.com/tft/match/v1/matches/by-puuid/${userInfo.puuid}/ids?count=1&api_key=${process.env.RIOT_KEY}`
-    );
+    const riotName = userInfo.riotName
+    const riotTag = userInfo.riotTag
+    console.log (riotName, riotTag)
 
+    const getPuuid = await axios.get(`https://americas.api.riotgames.com/riot/account/v1/accounts/by-riot-id/${riotName}/${riotTag}?api_key=${process.env.RIOT_KEY}`)
+    console.log (getPuuid)
+    const { data } = getPuuid
+    console.log ("This data:", data.puuid)
+    const getMatchId = await axios.get(
+      `https://americas.api.riotgames.com/tft/match/v1/matches/by-puuid/${data.puuid}/ids?count=1&api_key=${process.env.RIOT_KEY}`
+    );
+    
     if (getMatchId.data && getMatchId.data.length > 0) {
       lastMatchId = getMatchId.data[0];
     } else {
       return null;
     }
-
+console.log (lastMatchId)
     const MatchInfo = await axios.get(
       `https://americas.api.riotgames.com/tft/match/v1/matches/${lastMatchId}?api_key=${process.env.RIOT_KEY}`
     );
@@ -69,7 +76,7 @@ export async function execute(interaction) {
 
     const participants = matchDetails.info.participants;
     participants.forEach((participant) => {
-      if (userInfo.puuid == participant.puuid) {
+      if (data.puuid == participant.puuid) {
         placement = participant.placement;
         // championPick = participant.champion
         // championBan = participant.ban
