@@ -8,7 +8,7 @@ const userSchema = new Schema({
     discordId: String, 
     discordAvatarId: String,
     teamName: String,
-    points: Number
+    points: { type: Number, default: 0 }
 });
 
 const Model = mongoose.model('User', userSchema);

@@ -57,6 +57,7 @@ export async function execute(interaction) {
         user = new UserSchema({riotName: data.gameName, riotTag: data.tagLine, discordTag: interaction.user.username, discordId:interaction.user.id, discordAvatarId:interaction.user.avatar});
 
         await user.save();
-        await interaction.reply({content: `${interaction.user} sido inscripto correctamente!`});
+        console.log(user);
+        await interaction.reply({ content: `${interaction.user} sido inscripto correctamente!` });
     }
 }
