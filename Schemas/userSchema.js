@@ -6,7 +6,9 @@ const userSchema = new Schema({
     riotTag: String,
     discordTag: String,
     discordId: String, 
-    discordAvatarId: String
+    discordAvatarId: String,
+    teamName: String,
+    points: Number
 });
 
 const Model = mongoose.model('User', userSchema);

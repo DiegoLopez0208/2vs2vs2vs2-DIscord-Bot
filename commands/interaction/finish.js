@@ -4,96 +4,110 @@ const { SlashCommandBuilder } = pkg;
 import { UserSchema } from "../../Schemas/userSchema.js";
 import { MatchSchema } from "../../Schemas/matchSchema.js";
 
-
-
 export const data = new SlashCommandBuilder()
   .setName("finish")
   .setDescription("Empieza el conteo de ✅.");
 
 export async function execute(interaction) {
   try {
-    // Cambiar interaction.reply por message.send
     const message = await interaction.channel.send({
-      content: "Conteo de ✅(Maximo 8): ",
+      content: "Conteo de ✅ (Máximo 8): ",
       fetchReply: true,
     });
 
-    const filterReaction = (reaction , user) => {
+    const filterReaction = (reaction, user) => {
       return reaction.emoji.name === "✅" && !user.bot
     };
+
+    const maxReactions = 2;
+    let reactionCount = 0;
+
+
     const collector = message.createReactionCollector({
       filter: filterReaction,
       time: 60000, // 60 segundos de tiempo de espera
-      errors: ["time"],
-      max: 1 // Maximo a poder escribir
+      max: maxReactions,
+      errors: ["time"]
     });
 
-    collector.on("collect", (_reaction, user) => {
-      console.log(`${user.tag} reaccionó con ✅`);
-    });
+    collector.on("collect", async (_reaction, user) => {
+      try {
+        console.log(`⭕ ${user.username} reaccionó con ✅`);
 
-    collector.on("end", (collected) => {
-      console.log(`Se obtuvieron ${collected.size} reacciones.`);
-      if (collected.size >= 1) {
-        console.log (collected.size)
-        message.delete()
-        interaction.channel.send ({
-          content: "Reacciones terminadas"
-        })
-      } else {
-        interaction.channel.send(
-          `No se obtuvo la cantidad requerida de reacciones.`
+        reactionCount++;
+        console.log(`⭕ Número actual de reacciones: ${reactionCount}`);
+
+        const discordTag = user.username;
+        const userInfo = await UserSchema.findOne({ discordTag });
+
+        if (!userInfo) {
+          interaction.reply(`❌ No se encontró información del usuario ${interaction.user.username}.`);
+          return;
+        }
+
+        const { riotName, riotTag } = userInfo;
+
+        const getPuuid = await axios.get(
+          `https://americas.api.riotgames.com/riot/account/v1/accounts/by-riot-id/${riotName}/${riotTag}?api_key=${process.env.RIOT_KEY}`
         );
+
+        const { data: riotData } = getPuuid;
+
+        const getMatchId = await axios.get(
+          `https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/${riotData.puuid}/ids?count=1&api_key=${process.env.RIOT_KEY}`
+        );
+
+        const lastMatchId = getMatchId.data[0];
+
+        if (!lastMatchId) {
+          interaction.reply(`❌ No se encontró información de la última partida para ${user.tag}.`);
+          return;
+        }
+
+        const matchInfo = await axios.get(
+          `https://americas.api.riotgames.com/lol/match/v5/matches/${lastMatchId}?api_key=${process.env.RIOT_KEY}`
+        );
+
+        const participants = matchInfo.data.info.participants;
+        const participant = participants.find((p) => p.puuid === riotData.puuid);
+
+        if (!participant) {
+          interaction.reply(`❌ No se encontró información del participante en la última partida para ${user.tag}.`);
+          return;
+        }
+
+        const placement = participant.placement;
+        const championPick = participant.championName;
+
+        new MatchSchema({
+          discordTag: user.username,
+          matchId: lastMatchId,
+          placement: placement,
+          charSelected: championPick,
+        }).save()
+
+        console.log(`⭕ Información recopilada para ${user.tag}.`);
+      } catch (error) {
+        console.error(`❌ Error al procesar información para ${user.tag}:`, error);
       }
     });
-
     await message.react("✅");
-    let lastMatchId;
-    let placement;
+    collector.on("end", async () => {
 
-    const discordTag = interaction.user.username;
-    const userInfo = await UserSchema.findOne({ discordTag });
-    const riotName = userInfo.riotName
-    const riotTag = userInfo.riotTag
-    console.log (riotName, riotTag)
+      if (reactionCount > 0) {
 
-    const getPuuid = await axios.get(`https://americas.api.riotgames.com/riot/account/v1/accounts/by-riot-id/${riotName}/${riotTag}?api_key=${process.env.RIOT_KEY}`)
-    console.log (getPuuid)
-    const { data } = getPuuid
-    console.log ("This data:", data.puuid)
-    const getMatchId = await axios.get(
-      `https://americas.api.riotgames.com/tft/match/v1/matches/by-puuid/${data.puuid}/ids?count=1&api_key=${process.env.RIOT_KEY}`
-    );
-    
-    if (getMatchId.data && getMatchId.data.length > 0) {
-      lastMatchId = getMatchId.data[0];
-    } else {
-      return null;
-    }
-console.log (lastMatchId)
-    const MatchInfo = await axios.get(
-      `https://americas.api.riotgames.com/tft/match/v1/matches/${lastMatchId}?api_key=${process.env.RIOT_KEY}`
-    );
-
-    const matchDetails = MatchInfo.data;
-
-    const participants = matchDetails.info.participants;
-    participants.forEach((participant) => {
-      if (data.puuid == participant.puuid) {
-        placement = participant.placement;
-        // championPick = participant.champion
-        // championBan = participant.ban
+        console.log(`⭕️ Se obtuvieron ${reactionCount} reacciones.`);
+        interaction.channel.send({
+          content: "Reacciones terminadas",
+        });
+      } else {
+        interaction.channel.send("No se obtuvo la cantidad requerida de reacciones.");
       }
     });
 
-    new MatchSchema({
-      discordTag: interaction.user.username,
-      puuid: userInfo.puuid,
-      matchId: lastMatchId,
-      placement: placement,
-    }).save();
-    console.log("Placement:", placement);
-  } catch (error) {
+  }  
+  catch (error) {
     console.error("Error:", error);
+    interaction.reply("❌ Hubo un error al ejecutar el comando.");
   }
 }

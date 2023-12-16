@@ -42,14 +42,14 @@ try {
         client.commands.set(command.data.name, command);
       } else {
         console.log(
-          `[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`
+          `[ADVERTENCIA] El comando en ${filePath} está falta de una propiedad "data" o "execute" requerida.`
         );
       }
     }
   }
 
   client.once("ready", () => {
-    console.log("✅ The Discord Bot is Ready!");
+    console.log("[✅] El bot de Discord ha sido inicializado!");
   });
 
   client.on("interactionCreate", async (interaction) => {
@@ -66,13 +66,13 @@ try {
       if (interaction.replied || interaction.deferred) {
         await interaction.followUp({
           content:
-            "❌ Hubo un error al ejecutar este comando. Por favor, inténtalo de nuevo.",
+            "[❌] Hubo un error al ejecutar este comando. Por favor, inténtalo de nuevo.",
           ephemeral: true,
         });
       } else {
         await interaction.reply({
           content:
-            "❌ Hubo un error al ejecutar este comando. Por favor, inténtalo de nuevo.",
+            "[❌] Hubo un error al ejecutar este comando. Por favor, inténtalo de nuevo.",
           ephemeral: true,
         });
       }

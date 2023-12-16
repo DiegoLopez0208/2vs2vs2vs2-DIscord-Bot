@@ -39,7 +39,7 @@ try {
 
   // and deploy your commands!
   console.log(
-    `✅ Started refreshing ${commands.length} application (/) commands.`
+    `[✅] Se inició la actualización de ${commands.length} comandos de la aplicación (/).`
   );
 
   // The put method is used to fully refresh all commands in the guild with the current set
@@ -48,7 +48,7 @@ try {
     { body: commands }
   );
 
-  console.log(`✅ Successfully reloaded ${data.length} application (/) commands.`);
+  console.log(`[✅] Se recargaron exitosamente ${data.length} comandos de la aplicación (/).`);
 } catch (error) {
   // And of course, make sure you catch and log any errors!
   console.error("❌", error);

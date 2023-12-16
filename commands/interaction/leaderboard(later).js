@@ -35,7 +35,7 @@ async function generateLeaderboard(users) {
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
   ctx.font = "30px Roboto";
-  ctx.fillStyle = "black";
+  ctx.fillStyle = "black"; 
 
   let y = 50;
 

@@ -5,7 +5,6 @@ const teamSchema = new Schema({
     name: String,
     memberid1: { type: Schema.Types.ObjectId, ref: 'User' },
     memberid2: { type: Schema.Types.ObjectId, ref: 'User' },
-    icon: String,
     points: Number
 });
 

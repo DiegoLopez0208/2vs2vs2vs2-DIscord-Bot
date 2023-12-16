@@ -1,6 +1,6 @@
 import pkg from 'discord.js';
 const { SlashCommandBuilder } = pkg;
-import { TeamSchema } from '../../Schemas/teamSchema.js'
+
 import { UserSchema } from '../../Schemas/userSchema.js';
 import "../../config/dotenv.js";
 
@@ -55,12 +55,11 @@ export async function execute(interaction) {
     return interaction.reply({ content: `❌ Uno de los usuarios ya está inscrito en un equipo.`, ephemeral: true });
   }
 */
-  const newTeam = new TeamSchema({
+  const newTeam = new UserSchema({
     name,
     memberid1: user1,
     memberid2: user2,
     icon: '',
-    points: 0
   })
 
   await newTeam.save();

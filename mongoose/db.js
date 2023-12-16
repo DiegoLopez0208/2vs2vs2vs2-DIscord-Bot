@@ -7,9 +7,9 @@ mongoose.connect(process.env.DATABASE_TOKEN);
 
 const db = mongoose.connection;
 
-db.on('error', console.error.bind(console, '❌ MongoDB connection error: '));
+db.on('error', console.error.bind(console, '[❌] Error de conexión con MongoDBs '));
 db.once('open', () => {
-  console.log('✅ Successful connection to MongoDB! ');
+  console.log('[✅] Conexion con la base de datos de MongoDB con exito ');
 });
 
 

@@ -4,9 +4,8 @@ const { Schema } = mongoose;
 const matchSchema = new Schema({
     user: { type: Schema.Types.ObjectId, ref: 'User'},
     charSelected: String,
-    banSelected: String,
-    playedAt: Number,
-    placement: Number,
+    playedAt: String,
+    placement: String,
     matchId: String,
     puuid: String,
     discordTag: String
