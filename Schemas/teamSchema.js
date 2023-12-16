@@ -3,11 +3,12 @@ const { Schema } = mongoose;
 
 const teamSchema = new Schema({
     name: String,
-    memberid1: { type: Schema.Types.ObjectId, ref: 'User' },
-    memberid2: { type: Schema.Types.ObjectId, ref: 'User' },
-    points: Number
+    memberid1: String,
+    memberid2: String,
+    points: { type: Number, default: 0 },
+    img: String
 });
 
-const Model = mongoose.model('Group', teamSchema);
+const Model = mongoose.model('Team', teamSchema);
 
 export { Model as TeamSchema }
