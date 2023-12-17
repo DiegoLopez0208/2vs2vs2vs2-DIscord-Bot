@@ -7,7 +7,7 @@ import '../../config/dotenv.js';
 
 export const data = new SlashCommandBuilder()
     .setName('inscription')
-    .setDescription('XD')
+    .setDescription('Inscribete en el evento!')
     .addStringOption((option) =>
         option
             .setName('nombreriot')

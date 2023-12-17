@@ -5,7 +5,7 @@ import "../../config/dotenv.js";
 import { TeamSchema } from "../../Schemas/teamSchema.js";
 
 export const data = new SlashCommandBuilder()
-  .setName("equipo")
+  .setName("create-team")
   .setDescription("Crear equipo!")
   .addUserOption((option) =>
     option.setName("integrante1").setDescription("Tu usuario")

@@ -7,8 +7,8 @@ const { SlashCommandBuilder, AttachmentBuilder } = pkg;
 registerFont("fonts/Roboto-Bold.ttf", { family: "Roboto" });
 
 export const data = new SlashCommandBuilder()
-  .setName("test")
-  .setDescription("XD");
+  .setName("leaderboard")
+  .setDescription("Provee la informacion de la tabla de calificaciones.");
 
 export async function execute(interaction) {
   const teams = await TeamSchema.find();
@@ -16,6 +16,7 @@ export async function execute(interaction) {
   const attachment = new AttachmentBuilder(buffer, { name: "leaderboard.png" });
 
   const embed = {
+    title: "Tabla de calificaciones: ",
     image: { url: "attachment://leaderboard.png" },
     color: 0x00ff00,
   };
@@ -24,11 +25,17 @@ export async function execute(interaction) {
 }
 
 async function generateLeaderboard(teams) {
-  const canvas = createCanvas(600, 700);
+  const canvas = createCanvas(750, 600);
   const ctx = canvas.getContext('2d');
-  ctx.fillStyle = '#36393e';
+
+  // 1. Gradiente de fondo
+  const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+  gradient.addColorStop(0, '#36393e');
+  gradient.addColorStop(1, '#1e2024');
+  ctx.fillStyle = gradient;
   ctx.fillRect(0, 0, canvas.width, canvas.height);
-  ctx.font = '16px Arial';
+
+  ctx.font = '18px Arial';
 
   let leaderboardData = await generateList(teams);
 
@@ -37,10 +44,19 @@ async function generateLeaderboard(teams) {
     const rectY = 30 + index * 80;
     const rectWidth = canvas.width - 20;
     const rectHeight = 60;
+
+    // 3. Bordes suaves
     const cornerRadius = 10;
 
-    ctx.strokeStyle = 'black';
+    // 4. Íconos redondeados
+    const iconX = rectX + 10;
+    const iconY = rectY + 10;
+    const iconWidth = 40;
+    const iconHeight = 40;
+    const iconRadius = 20;
+
     ctx.lineWidth = 2;
+
     ctx.beginPath();
     ctx.moveTo(rectX + cornerRadius, rectY);
     ctx.arcTo(rectX + rectWidth, rectY, rectX + rectWidth, rectY + rectHeight, cornerRadius);
@@ -48,8 +64,8 @@ async function generateLeaderboard(teams) {
     ctx.arcTo(rectX, rectY + rectHeight, rectX, rectY, cornerRadius);
     ctx.arcTo(rectX, rectY, rectX + rectWidth, rectY, cornerRadius);
     ctx.closePath();
-    ctx.stroke();
 
+    // 5. Colores más vibrantes
     let bgColor;
     if (index === 0) {
       bgColor = 'gold';
@@ -63,28 +79,35 @@ async function generateLeaderboard(teams) {
 
     ctx.fillStyle = bgColor;
     ctx.fill();
-
-    const iconX = rectX + 10;
-    const iconY = rectY + 10;
-    const iconWidth = 40;
-    const iconHeight = 40;
+    ctx.stroke();
 
     const playerIcon = await loadImage(team.imageSrc);
-    ctx.drawImage(playerIcon, iconX, iconY, iconWidth, iconHeight);
 
-    const textX = rectX + 60;
-    const textY = rectY + 30;
-    ctx.fillStyle = 'black';
-    ctx.fillText(`${index + 1}. ${team.teamName} - (${team.members})`, textX, textY);
+    // 4. Íconos redondeados
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(iconX + iconWidth / 2, iconY + iconHeight / 2, iconRadius, 0, Math.PI * 2, false);
+    ctx.closePath();
+    ctx.clip();
+    ctx.drawImage(playerIcon, iconX, iconY, iconWidth, iconHeight);
+    ctx.restore();
+
+    const textX = rectX + 90;
+    const textY = rectY + 35;
+   const color = '#1e2124'
+    // Texto siempre en negro
+    ctx.fillStyle = color;
+    ctx.fillText(`${index + 1}. ${team.teamName} / (${team.members})`, textX, textY);
 
     const scoreText = `Puntaje: ${team.score}`;
     const scoreTextWidth = ctx.measureText(scoreText).width;
-    const scoreX = rectX + rectWidth - scoreTextWidth - 10;
+    const scoreX = rectX + rectWidth - scoreTextWidth - 20; // Ajuste de posición
     ctx.fillText(scoreText, scoreX, textY);
   }
 
   return canvas.toBuffer();
 }
+
 
 async function generateList(teams) {
   let leaderboardData = [];

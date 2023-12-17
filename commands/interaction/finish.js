@@ -19,7 +19,7 @@ export async function execute(interaction) {
       return reaction.emoji.name === "✅" && !user.bot
     };
 
-    const maxReactions = 2;
+    const maxReactions = 8;
     let reactionCount = 0;
 
 
