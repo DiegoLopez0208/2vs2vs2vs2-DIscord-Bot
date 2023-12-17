@@ -1,12 +1,9 @@
-import pkg from 'discord.js';
-
-const { SlashCommandBuilder, AttachmentBuilder, EmbedBuilder } = pkg;
-import axios from 'axios';
-import { MatchSchema } from '../../Schemas/matchSchema.js';
-import { UserSchema } from '../../Schemas/userSchema.js';
 import { createCanvas, loadImage, registerFont } from 'canvas';
+import { SlashCommandBuilder, AttachmentBuilder, EmbedBuilder } from 'discord.js';
+import { TeamSchema } from "../../Schemas/teamSchema.js"
+import { UserSchema } from '../../Schemas/userSchema.js';
 
-// Asegúrate de tener la fuente Arial.ttf en tu proyecto
+// Registra la fuente si es necesario (ajusta la ruta según la ubicación de tu archivo de fuente)
 registerFont("fonts/Roboto-Bold.ttf", { family: "Roboto" });
 
 export const data = new SlashCommandBuilder()
@@ -14,89 +11,78 @@ export const data = new SlashCommandBuilder()
   .setDescription('Muestra información del equipo:');
 
 export async function execute(interaction) {
+  await interaction.reply({ content: "Informacion del Equipo:"});
+  const { username: memberid1, username: memberid2 } = interaction.user;
+
   try {
-    await interaction.reply({ content: "Informacion del jugador:"});
-    const discordTag = interaction.user.username;
-    console.log(discordTag);
+    const teams = await TeamSchema.findOne({
+      $or: [
+        { memberid1 },
+        { memberid2 }
+      ]
+    });
+    const member1 = teams.memberid1
+    const member2 = teams.memberid2
+    const memberInfo1= await UserSchema.findOne ({
+      discordTag: member1
+    })
+    const memberInfo2= await UserSchema.findOne ({
+      discordTag: member2
+    })
+    console.log (memberInfo1)
+    console.log (memberInfo2)
+    const avatar1 = `https://cdn.discordapp.com/avatars/${memberInfo1.discordId}/${memberInfo1.discordAvatarId}`
+    const avatar2 = `https://cdn.discordapp.com/avatars/${memberInfo2.discordId}/${memberInfo2.discordAvatarId}`
 
-    const matchInfo = await MatchSchema.find({ discordTag });
-    const userInfo = await UserSchema.findOne({ discordTag });
 
-    const getAvatarId = await axios.get(
-      `https://la2.api.riotgames.com/lol/summoner/v4/summoners/by-name/${userInfo.riotName}?api_key=${process.env.RIOT_KEY}`
-    );
-
-    const avatarId = getAvatarId.data.profileIconId;
-    const summonerLevel = getAvatarId.data.summonerLevel;
-    const version = '13.24.1';
-
-    if (matchInfo && matchInfo.length > 0) {
-      // Crear el canvas y dibujar en él
-      const canvas = createCanvas(600, 600);
+      // Crear el canvas
+      const canvas = createCanvas(800, 800);
       const ctx = canvas.getContext('2d');
 
-      // Establecer estilos
-      ctx.fillStyle = '#36393e'; // Color hexadecimal del fondo
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = 'white'; // Color del texto
-      ctx.font = '16px Roboto';
+      // Cargar las imágenes
+      const teamImg = await loadImage(teams.img);
 
-      let offsetY = 20;
+      // Dibujar la información del equipo en el canvas
+      // Ejemplo básico:
+      ctx.fillStyle = '#3498db';
+      ctx.fillRect(0, 0, 400, 200);
 
-      for (const game of matchInfo) {
-        // Dibujar recuadro alrededor de cada partida
-        const boxWidth = 560;
-        const boxHeight = 160;
-        const boxX = 20;
-        const boxY = offsetY;
-        const borderWidth = 5;
-        const borderColor = 'blue';
+      ctx.fillStyle = '#ffffff';
+      ctx.font = '20px Roboto';
+      ctx.fillText(`Equipo: ${teams.name}`, 10, 30);
 
-        ctx.fillStyle = borderColor;
-        ctx.fillRect(boxX, boxY, borderWidth, boxHeight); // Borde izquierdo
+      // Dibuja la imagen del equipo
+      ctx.drawImage(teamImg, 10, 50, 80, 80);
 
-        ctx.fillStyle = '#2c2f33'; // Color de fondo del recuadro
-        ctx.fillRect(boxX + borderWidth, boxY, boxWidth - borderWidth, boxHeight);
+      // Dibuja la información de los integrantes
+      let yPosition = 150;
 
-        // Dibujar información de la partida dentro del recuadro
-        ctx.fillStyle = 'white'; // Restablecer el color del texto
-        ctx.fillText(`Partida: ${game.matchId}`, boxX + 10, offsetY + 30);
-        ctx.fillText(`Match ID: ${game.matchId}`, boxX + 10, offsetY + 60);
-        ctx.fillText(
-          `Campeón Elegido: ${game.charSelected}`,
-          boxX + 10,
-          offsetY + 90
-        );
-        ctx.fillText(`Posición: ${game.placement}`, boxX + 10, offsetY + 120);
-        // Dibujar el icono del campeón
-        const iconPath = `https://ddragon.leagueoflegends.com/cdn/${version}/img/champion/${game.charSelected}.png`;
-        const icon =  await loadImage(iconPath);
-        ctx.drawImage(icon, boxX + boxWidth - 60, boxY + 20, 50, 50);
+        const memberImg = await loadImage(avatar1);
+        ctx.drawImage(memberImg, 10, yPosition, 60, 60);
+        ctx.fillText(teams.memberid1, 80, yPosition + 30);
+        yPosition += 70;
+        const memberImg2 = await loadImage(avatar2);
+        ctx.drawImage(memberImg2, 10, yPosition, 60, 60);
+        ctx.fillText(teams.memberid2, 80, yPosition + 30);
 
-        offsetY += boxHeight + 20; // Ajusta según sea necesario
-      }
-     const canvasImg = await canvas.toBuffer()
-      const attachment =  new AttachmentBuilder(canvasImg, { name: 'team-info.png' })
 
+      // Dibuja la puntuación
+      ctx.fillText(`Puntuación: ${teams.points}`, 10, yPosition + 30);
+
+      const buffer = await canvas.toBuffer()
+      const attachment =  new AttachmentBuilder(buffer, { name: 'team-info.png' })
       const embed = new EmbedBuilder()
-        .setColor("#317702")
-        .setAuthor({ name: `${userInfo.riotName} - Lvl:  ${summonerLevel}`, iconURL:`https://ddragon.leagueoflegends.com/cdn/${version}/img/profileicon/${avatarId}.png` , url: `https://www.op.gg/summoners/las/${userInfo.riotName}-${userInfo.riotTag}` })
-        .setTitle(`Información de las partidas de ${discordTag}`)
-        .setImage('attachment://team-info.png'); // Cambiado aquí para referenciar directamente al archivo adjunto
-      
-      // Enviar el embed con la imagen del canvas directamente en el mensaje
-      await interaction.followUp({
-        embeds: [embed],
-        files: [attachment],
-      });
-    } else {
-      interaction.followUp('No se encontró ningún match para el usuario.');
-    }
+      .setColor("#00B0F6")
+      .setImage('attachment://team-info.png'); // Cambiado aquí para referenciar directamente al archivo adjunto
+    
+    // Enviar el embed con la imagen del canvas directamente en el mensaje
+    await interaction.followUp({
+      embeds: [embed],
+      files: [attachment],
+    });
+
   } catch (error) {
-    console.error('Error:', error);
-    interaction.followUp(
-      'Ocurrió un error al procesar la solicitud.'
-    );
+    console.error('Error al buscar información del equipo:', error);
+    await interaction.followUp({ content: 'Hubo un error al buscar la información del equipo.', ephemeral: true });
   }
 }
-
