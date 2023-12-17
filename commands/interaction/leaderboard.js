@@ -30,8 +30,8 @@ async function generateLeaderboard(teams) {
 
   // 1. Gradiente de fondo
   const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-  gradient.addColorStop(0, '#36393e');
-  gradient.addColorStop(1, '#1e2024');
+  gradient.addColorStop(0, '#282b30');
+  gradient.addColorStop(1, '#424549');
   ctx.fillStyle = gradient;
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 

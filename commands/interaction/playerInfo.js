@@ -31,62 +31,86 @@ export async function execute(interaction) {
     const version = "13.24.1";
 
     if (matchInfo && matchInfo.length > 0) {
-      // Crear el canvas y dibujar en él
-      const canvas = createCanvas(600, 520);
-      const ctx = canvas.getContext("2d");
+ // Crear el canvas y dibujar en él
+const canvas = createCanvas(600, 520);
+const ctx = canvas.getContext("2d");
 
-      // Establecer estilos
-      ctx.fillStyle = "#36393e"; // Color hexadecimal del fondo
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+// Añadir gradiente de fondo
+const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+gradient.addColorStop(0, "#282b30");
+gradient.addColorStop(1, "#424549");
+ctx.fillStyle = gradient;
+ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      let offsetY = 20;
-      let gameNumber = 1;
-      for (const game of matchInfo) {
-        // Dibujar recuadro alrededor de cada partida
-        const boxWidth = 560;
-        const boxHeight = 160;
-        const boxX = 20;
-        const boxY = offsetY;
-        const borderWidth = 5;
-        const borderColor = "#00B0F6";
+// Añadir sombra al texto
+ctx.shadowColor = "rgba(0, 0, 0, 0.5)";
+ctx.shadowBlur = 5;
 
-        // Borde izquierdo
-        ctx.fillStyle = borderColor;
-        ctx.fillRect(boxX, boxY, borderWidth, boxHeight);
+let offsetY = 20;
+let gameNumber = 1;
 
-        // Color de fondo del recuadro
-        ctx.fillStyle = "#2c2f33";
-        ctx.fillRect(
-          boxX + borderWidth,
-          boxY,
-          boxWidth - borderWidth,
-          boxHeight
-        );
+// Bordes redondeados para los recuadros
+ctx.roundRect = function (x, y, width, height, radius) {
+  ctx.beginPath();
+  ctx.moveTo(x + radius, y);
+  ctx.arcTo(x + width, y, x + width, y + height, radius);
+  ctx.arcTo(x + width, y + height, x, y + height, radius);
+  ctx.arcTo(x, y + height, x, y, radius);
+  ctx.arcTo(x, y, x + width, y, radius);
+  ctx.closePath();
+};
 
-        // Dibujar información de la partida dentro del recuadro
-        ctx.fillStyle = "white"; // Color del texto
-        ctx.font = "bold 16px Roboto";
-        ctx.fillText(`Partida: ${gameNumber}`, boxX + 10, offsetY + 30);
-        ctx.fillText(`Match ID: ${game.matchId}`, boxX + 10, offsetY + 60);
-        ctx.fillText(
-          `Campeón Elegido: ${game.charSelected}`,
-          boxX + 10,
-          offsetY + 90
-        );
-        ctx.fillText(`Posición: ${game.placement}`, boxX + 10, offsetY + 120);
+const borderRadius = 10;
+const borderColor = "#005080"; // Un tono más oscuro de azul
 
-        // Dibujar el icono del campeón
-        const iconPath = `https://ddragon.leagueoflegends.com/cdn/${version}/img/champion/${game.charSelected}.png`;
-        const icon = await loadImage(iconPath);
-        ctx.drawImage(icon, boxX + boxWidth - 60, boxY + 20, 50, 50);
+for (const game of matchInfo) {
+  // Dibujar recuadro alrededor de cada partida
+  const boxWidth = 560;
+  const boxHeight = 160;
+  const boxX = 20;
+  const boxY = offsetY;
+  const borderWidth = 5;
 
-        offsetY += boxHeight + 20; // Ajusta según sea necesario
-        gameNumber++;
-      }
-      const canvasImg = await canvas.toBuffer();
-      const attachment = new AttachmentBuilder(canvasImg, {
-        name: "player-info.png",
-      });
+  // Borde izquierdo
+  ctx.fillStyle = borderColor;
+  ctx.fillRect(boxX, boxY, borderWidth, boxHeight);
+
+  // Color de fondo del recuadro con bordes redondeados
+  ctx.fillStyle = "#2c2f33";
+  ctx.roundRect(
+    boxX + borderWidth,
+    boxY,
+    boxWidth - borderWidth,
+    boxHeight,
+    borderRadius
+  );
+  ctx.fill();
+
+  // Dibujar información de la partida dentro del recuadro
+  ctx.fillStyle = "white"; // Color del texto
+  ctx.font = "bold 16px Roboto";
+  ctx.fillText(`Partida: ${gameNumber}`, boxX + 10, offsetY + 30);
+  ctx.fillText(`Match ID: ${game.matchId}`, boxX + 10, offsetY + 60);
+  ctx.fillText(
+    `Campeón Elegido: ${game.charSelected}`,
+    boxX + 10,
+    offsetY + 90
+  );
+  ctx.fillText(`Posición: ${game.placement}`, boxX + 10, offsetY + 120);
+
+  // Dibujar el icono del campeón
+  const iconPath = `https://ddragon.leagueoflegends.com/cdn/${version}/img/champion/${game.charSelected}.png`;
+  const icon = await loadImage(iconPath);
+  ctx.drawImage(icon, boxX + boxWidth - 60, boxY + 20, 50, 50);
+
+  offsetY += boxHeight + 20; // Ajusta según sea necesario
+  gameNumber++;
+}
+
+const canvasImg = await canvas.toBuffer();
+const attachment = new AttachmentBuilder(canvasImg, {
+  name: "player-info.png",
+});
 
       const embed = new EmbedBuilder()
         .setColor("#00B0F6")
