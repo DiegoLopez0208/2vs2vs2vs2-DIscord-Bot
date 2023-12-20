@@ -23,7 +23,7 @@ export async function execute(interaction) {
       return reaction.emoji.name === "✅" && !user.bot
     };
 
-    const maxReactions = 8;
+    const maxReactions = 1;
     let reactionCount = 0;
 
 
@@ -80,7 +80,7 @@ export async function execute(interaction) {
           return;
         }
 
-        const placement = participant.placement;
+        const placement = 1; //participant.placement;
         const championPick = participant.championName;
 
         new MatchSchema({
@@ -92,11 +92,15 @@ export async function execute(interaction) {
 
         const { username: memberName1, username: memberName2 } = user;
 
-        const userTeam = TeamSchema.findOne({$or: [{ memberName1 }, { memberName2 }],});
-        (await teams).forEach(team => {
-          if(team.name == userTeam.name && team.updated) {
-              TeamSchema.updateOne({ name: team.name }, { $inc: {points: assignPoints(placement)}});
-              team.updated = true;
+        const userTeam = await TeamSchema.findOne({$or: [{ memberName1 }, { memberName2 }],});
+        console.log(userTeam);
+        (await teams).forEach(async team => {
+          console.log("placement:",placement);
+          console.log(team.name, userTeam.name, team.name == userTeam.name, !team.updated);
+          if(team.name == userTeam.name && !team.updated) {
+            console.log("team:",team.name,"sumando",assignPoints(placement),"puntos");
+            await TeamSchema.updateOne({ name: team.name }, { $inc: {points: assignPoints(placement)}});
+            team.updated = true;
           }
         })
 
@@ -114,7 +118,6 @@ export async function execute(interaction) {
         interaction.channel.send({
           content: "Reacciones terminadas",
         });
-        ///
 
       } else {
         interaction.channel.send("No se obtuvo la cantidad requerida de reacciones.");

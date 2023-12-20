@@ -116,7 +116,7 @@ async function generateList(teams) {
       imageSrc: team.img,
       teamName: team.name,
       members: `${team.memberName1} / ${team.memberName2}`,
-      score: 1500,
+      score: team.points,
     });
   }
 
