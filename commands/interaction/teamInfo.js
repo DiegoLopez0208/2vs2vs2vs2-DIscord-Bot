@@ -17,11 +17,11 @@ export const data = new SlashCommandBuilder()
 export async function execute(interaction) {
   await interaction.reply({ content: "Informacion del Equipo:" });
 
-  const { username: memberid1, username: memberid2 } = interaction.user;
+  const { username: memberName1, username: memberName2 } = interaction.user;
 
   try {
     const team = await TeamSchema.findOne({
-      $or: [{ memberid1 }, { memberid2 }],
+      $or: [{ memberName1 }, { memberName2 }],
     });
 
     if (!team) {
@@ -29,18 +29,16 @@ export async function execute(interaction) {
     }
 
     const memberInfo1 = await UserSchema.findOne({
-      discordTag: team.memberid1,
+      discordTag: team.memberName1,
     });
 
     const memberInfo2 = await UserSchema.findOne({
-      discordTag: team.memberid2,
+      discordTag: team.memberName2,
     });
 
     const avatar1 = `https://cdn.discordapp.com/avatars/${memberInfo1.discordId}/${memberInfo1.discordAvatarId}`;
     const avatar2 = `https://cdn.discordapp.com/avatars/${memberInfo2.discordId}/${memberInfo2.discordAvatarId}`;
 
-   // Crear el canvas
-// Crear el canvas
 // Crear el canvas
 const canvas = createCanvas(600, 400);
 const ctx = canvas.getContext("2d");

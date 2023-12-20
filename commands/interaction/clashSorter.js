@@ -4,7 +4,7 @@ import fs from 'fs';
 const { SlashCommandBuilder } = pkg;
 import '../../config/dotenv.js';
 import { TeamSchema } from '../../Schemas/teamSchema.js';
-import createClashes from '../../funcs/createClashes.js';
+import createClashes from '../../functions/createClashes.js';
 
 export const data = new SlashCommandBuilder()
     .setName('sort')

@@ -3,12 +3,16 @@ import pkg from "discord.js";
 const { SlashCommandBuilder } = pkg;
 import { UserSchema } from "../../Schemas/userSchema.js";
 import { MatchSchema } from "../../Schemas/matchSchema.js";
+import { TeamSchema } from "../../Schemas/teamSchema.js"
+import getTeams from "../../functions/getTeams.js";
+import assignPoints from "../../functions/assignPoints.js";
 
 export const data = new SlashCommandBuilder()
   .setName("finish")
   .setDescription("Empieza el conteo de ✅.");
 
 export async function execute(interaction) {
+  let teams = getTeams();
   try {
     const message = await interaction.channel.send({
       content: "Conteo de ✅ (Máximo 8): ",
@@ -19,7 +23,7 @@ export async function execute(interaction) {
       return reaction.emoji.name === "✅" && !user.bot
     };
 
-    const maxReactions = 8;
+    const maxReactions = 1;
     let reactionCount = 0;
 
 
@@ -76,7 +80,7 @@ export async function execute(interaction) {
           return;
         }
 
-        const placement = participant.placement;
+        const placement = 1; //participant.placement;
         const championPick = participant.championName;
 
         new MatchSchema({
@@ -85,6 +89,20 @@ export async function execute(interaction) {
           placement: placement,
           charSelected: championPick,
         }).save()
+
+        const { username: memberName1, username: memberName2 } = user;
+
+        const userTeam = await TeamSchema.findOne({$or: [{ memberName1 }, { memberName2 }],});
+        console.log(userTeam);
+        (await teams).forEach(async team => {
+          console.log("placement:",placement);
+          console.log(team.name, userTeam.name, team.name == userTeam.name, !team.updated);
+          if(team.name == userTeam.name && !team.updated) {
+            console.log("team:",team.name,"sumando",assignPoints(placement),"puntos");
+            await TeamSchema.updateOne({ name: team.name }, { $inc: {points: assignPoints(placement)}});
+            team.updated = true;
+          }
+        })
 
         console.log(`⭕ Información recopilada para ${user.tag}.`);
       } catch (error) {
@@ -100,6 +118,7 @@ export async function execute(interaction) {
         interaction.channel.send({
           content: "Reacciones terminadas",
         });
+
       } else {
         interaction.channel.send("No se obtuvo la cantidad requerida de reacciones.");
       }

@@ -3,8 +3,8 @@ const { Schema } = mongoose;
 
 const teamSchema = new Schema({
     name: String,
-    memberid1: String,
-    memberid2: String,
+    memberName1: String,
+    memberName2: String,
     points: { type: Number, default: 0 },
     img: String
 });

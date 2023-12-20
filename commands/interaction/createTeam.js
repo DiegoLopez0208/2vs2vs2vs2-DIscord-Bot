@@ -98,8 +98,8 @@ export async function execute(interaction) {
 
   const team = new TeamSchema({
     name: name,
-    memberid1: user1.discordTag,
-    memberid2: user2.discordTag,
+    memberName1: user1.discordTag,
+    memberName2: user2.discordTag,
     img: img,
   });
 
