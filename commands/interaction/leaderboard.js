@@ -26,16 +26,16 @@ export async function execute(interaction) {
 
 async function generateLeaderboard(teams) {
   const canvas = createCanvas(750, 600);
-  const ctx = canvas.getContext('2d');
+  const ctx = canvas.getContext("2d");
 
   // 1. Gradiente de fondo
   const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-  gradient.addColorStop(0, '#282b30');
-  gradient.addColorStop(1, '#424549');
+  gradient.addColorStop(0, "#282b30");
+  gradient.addColorStop(1, "#424549");
   ctx.fillStyle = gradient;
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  ctx.font = '18px Arial';
+  ctx.font = "18px Arial";
 
   let leaderboardData = await generateList(teams);
 
@@ -59,8 +59,20 @@ async function generateLeaderboard(teams) {
 
     ctx.beginPath();
     ctx.moveTo(rectX + cornerRadius, rectY);
-    ctx.arcTo(rectX + rectWidth, rectY, rectX + rectWidth, rectY + rectHeight, cornerRadius);
-    ctx.arcTo(rectX + rectWidth, rectY + rectHeight, rectX, rectY + rectHeight, cornerRadius);
+    ctx.arcTo(
+      rectX + rectWidth,
+      rectY,
+      rectX + rectWidth,
+      rectY + rectHeight,
+      cornerRadius
+    );
+    ctx.arcTo(
+      rectX + rectWidth,
+      rectY + rectHeight,
+      rectX,
+      rectY + rectHeight,
+      cornerRadius
+    );
     ctx.arcTo(rectX, rectY + rectHeight, rectX, rectY, cornerRadius);
     ctx.arcTo(rectX, rectY, rectX + rectWidth, rectY, cornerRadius);
     ctx.closePath();
@@ -68,13 +80,13 @@ async function generateLeaderboard(teams) {
     // 5. Colores más vibrantes
     let bgColor;
     if (index === 0) {
-      bgColor = 'gold';
+      bgColor = "gold";
     } else if (index === 1) {
-      bgColor = 'silver';
+      bgColor = "silver";
     } else if (index === 2) {
-      bgColor = 'peru';
+      bgColor = "peru";
     } else {
-      bgColor = '#7289da';
+      bgColor = "#7289da";
     }
 
     ctx.fillStyle = bgColor;
@@ -86,7 +98,14 @@ async function generateLeaderboard(teams) {
     // 4. Íconos redondeados
     ctx.save();
     ctx.beginPath();
-    ctx.arc(iconX + iconWidth / 2, iconY + iconHeight / 2, iconRadius, 0, Math.PI * 2, false);
+    ctx.arc(
+      iconX + iconWidth / 2,
+      iconY + iconHeight / 2,
+      iconRadius,
+      0,
+      Math.PI * 2,
+      false
+    );
     ctx.closePath();
     ctx.clip();
     ctx.drawImage(playerIcon, iconX, iconY, iconWidth, iconHeight);
@@ -94,10 +113,14 @@ async function generateLeaderboard(teams) {
 
     const textX = rectX + 90;
     const textY = rectY + 35;
-   const color = '#1e2124'
+    const color = "#1e2124";
     // Texto siempre en negro
     ctx.fillStyle = color;
-    ctx.fillText(`${index + 1}. ${team.teamName} / (${team.members})`, textX, textY);
+    ctx.fillText(
+      `${index + 1}. ${team.teamName} / (${team.members})`,
+      textX,
+      textY
+    );
 
     const scoreText = `Puntaje: ${team.score}`;
     const scoreTextWidth = ctx.measureText(scoreText).width;
@@ -107,7 +130,6 @@ async function generateLeaderboard(teams) {
 
   return canvas.toBuffer();
 }
-
 
 async function generateList(teams) {
   let leaderboardData = [];

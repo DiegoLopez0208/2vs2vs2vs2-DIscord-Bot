@@ -24,9 +24,15 @@ export async function execute(interaction) {
     console.log("Datos de la base de datos para UserSchema:");
     console.log(users);
 
-    interaction.reply({ content: "Consulta la consola para ver los datos.", ephemeral: true });
+    interaction.reply({
+      content: "Consulta la consola para ver los datos.",
+      ephemeral: true,
+    });
   } catch (error) {
     console.error("Error al buscar datos en la base de datos:", error);
-    interaction.reply({ content: "Hubo un error al buscar datos en la base de datos.", ephemeral: true });
+    interaction.reply({
+      content: "Hubo un error al buscar datos en la base de datos.",
+      ephemeral: true,
+    });
   }
 }

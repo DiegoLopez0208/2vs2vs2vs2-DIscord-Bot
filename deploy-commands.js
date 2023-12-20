@@ -1,15 +1,14 @@
-
-import pkg from 'discord.js';
-const {REST} = pkg
+import pkg from "discord.js";
+const { REST } = pkg;
 import { Routes } from "discord-api-types/v10";
 import { fileURLToPath } from "url";
 import fs from "fs/promises";
 import path from "path";
-import "./config/dotenv.js"
+import "./config/dotenv.js";
 
-const token = process.env.TOKEN
-const guildId = process.env.GUILD_ID
-const clientId = process.env.CLIENT_ID
+const token = process.env.TOKEN;
+const guildId = process.env.GUILD_ID;
+const clientId = process.env.CLIENT_ID;
 
 const commands = [];
 // Grab all the command folders from the commands directory you created earlier
@@ -21,7 +20,6 @@ try {
   const commandFolders = await fs.readdir(foldersPath);
 
   for (const folder of commandFolders) {
-  
     const commandsPath = path.join(foldersPath, folder);
     const commandFiles = (await fs.readdir(commandsPath)).filter((file) =>
       file.endsWith(".js")
@@ -48,7 +46,9 @@ try {
     { body: commands }
   );
 
-  console.log(`[✅] Se recargaron exitosamente ${data.length} comandos de la aplicación (/).`);
+  console.log(
+    `[✅] Se recargaron exitosamente ${data.length} comandos de la aplicación (/).`
+  );
 } catch (error) {
   // And of course, make sure you catch and log any errors!
   console.error("❌", error);
