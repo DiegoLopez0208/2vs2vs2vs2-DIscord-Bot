@@ -3,12 +3,16 @@ import pkg from "discord.js";
 const { SlashCommandBuilder } = pkg;
 import { UserSchema } from "../../Schemas/userSchema.js";
 import { MatchSchema } from "../../Schemas/matchSchema.js";
+import { TeamSchema } from "../../Schemas/teamSchema.js"
+import getTeams from "../../functions/getTeams.js";
+import assignPoints from "../../functions/assignPoints.js";
 
 export const data = new SlashCommandBuilder()
   .setName("finish")
   .setDescription("Empieza el conteo de ✅.");
 
 export async function execute(interaction) {
+  let teams = getTeams();
   try {
     const message = await interaction.channel.send({
       content: "Conteo de ✅ (Máximo 8): ",
@@ -86,6 +90,16 @@ export async function execute(interaction) {
           charSelected: championPick,
         }).save()
 
+        const { username: memberName1, username: memberName2 } = user;
+
+        const userTeam = TeamSchema.findOne({$or: [{ memberName1 }, { memberName2 }],});
+        (await teams).forEach(team => {
+          if(team.name == userTeam.name && team.updated) {
+              TeamSchema.updateOne({ name: team.name }, { $inc: {points: assignPoints(placement)}});
+              team.updated = true;
+          }
+        })
+
         console.log(`⭕ Información recopilada para ${user.tag}.`);
       } catch (error) {
         console.error(`❌ Error al procesar información para ${user.tag}:`, error);
@@ -100,6 +114,8 @@ export async function execute(interaction) {
         interaction.channel.send({
           content: "Reacciones terminadas",
         });
+        ///
+
       } else {
         interaction.channel.send("No se obtuvo la cantidad requerida de reacciones.");
       }

@@ -115,7 +115,7 @@ async function generateList(teams) {
     leaderboardData.push({
       imageSrc: team.img,
       teamName: team.name,
-      members: `${team.memberid1} / ${team.memberid2}`,
+      members: `${team.memberName1} / ${team.memberName2}`,
       score: 1500,
     });
   }
