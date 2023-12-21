@@ -6,7 +6,6 @@ import { MatchSchema } from "../../Schemas/matchSchema.js";
 import { UserSchema } from "../../Schemas/userSchema.js";
 import { createCanvas, loadImage, registerFont } from "canvas";
 
-// Asegúrate de tener la fuente Arial.ttf en tu proyecto
 registerFont("fonts/Roboto-Bold.ttf", { family: "Roboto" });
 
 export const data = new SlashCommandBuilder()
@@ -15,7 +14,6 @@ export const data = new SlashCommandBuilder()
 
 export async function execute(interaction) {
   try {
-    await interaction.reply({ content: "Informacion del jugador:" });
     const discordTag = interaction.user.username;
     console.log(discordTag);
 
@@ -31,25 +29,21 @@ export async function execute(interaction) {
     const version = "13.24.1";
 
     if (matchInfo && matchInfo.length > 0) {
-      // Crear el canvas y dibujar en él
       const canvas = createCanvas(600, 520);
       const ctx = canvas.getContext("2d");
 
-      // Añadir gradiente de fondo
       const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
       gradient.addColorStop(0, "#282b30");
       gradient.addColorStop(1, "#424549");
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // Añadir sombra al texto
       ctx.shadowColor = "rgba(0, 0, 0, 0.5)";
       ctx.shadowBlur = 5;
 
       let offsetY = 20;
       let gameNumber = 1;
 
-      // Bordes redondeados para los recuadros
       ctx.roundRect = function (x, y, width, height, radius) {
         ctx.beginPath();
         ctx.moveTo(x + radius, y);
@@ -61,21 +55,18 @@ export async function execute(interaction) {
       };
 
       const borderRadius = 10;
-      const borderColor = "#005080"; // Un tono más oscuro de azul
+      const borderColor = "#005080";
 
       for (const game of matchInfo) {
-        // Dibujar recuadro alrededor de cada partida
         const boxWidth = 560;
         const boxHeight = 160;
         const boxX = 20;
         const boxY = offsetY;
         const borderWidth = 5;
 
-        // Borde izquierdo
         ctx.fillStyle = borderColor;
         ctx.fillRect(boxX, boxY, borderWidth, boxHeight);
 
-        // Color de fondo del recuadro con bordes redondeados
         ctx.fillStyle = "#2c2f33";
         ctx.roundRect(
           boxX + borderWidth,
@@ -86,8 +77,7 @@ export async function execute(interaction) {
         );
         ctx.fill();
 
-        // Dibujar información de la partida dentro del recuadro
-        ctx.fillStyle = "white"; // Color del texto
+        ctx.fillStyle = "white";
         ctx.font = "bold 16px Roboto";
         ctx.fillText(`Partida: ${gameNumber}`, boxX + 10, offsetY + 30);
         ctx.fillText(`Match ID: ${game.matchId}`, boxX + 10, offsetY + 60);
@@ -98,12 +88,11 @@ export async function execute(interaction) {
         );
         ctx.fillText(`Posición: ${game.placement}`, boxX + 10, offsetY + 120);
 
-        // Dibujar el icono del campeón
         const iconPath = `https://ddragon.leagueoflegends.com/cdn/${version}/img/champion/${game.charSelected}.png`;
         const icon = await loadImage(iconPath);
         ctx.drawImage(icon, boxX + boxWidth - 60, boxY + 20, 50, 50);
 
-        offsetY += boxHeight + 20; // Ajusta según sea necesario
+        offsetY += boxHeight + 20;
         gameNumber++;
       }
 
@@ -120,18 +109,17 @@ export async function execute(interaction) {
           url: `https://www.op.gg/summoners/las/${userInfo.riotName}-${userInfo.riotTag}`,
         })
         .setTitle(`Información de las partidas de ${discordTag}: `)
-        .setImage("attachment://player-info.png"); // Cambiado aquí para referenciar directamente al archivo adjunto
+        .setImage("attachment://player-info.png");
 
-      // Enviar el embed con la imagen del canvas directamente en el mensaje
-      await interaction.followUp({
+      await interaction.reply({
         embeds: [embed],
         files: [attachment],
       });
     } else {
-      interaction.followUp("No se encontró ningún match para el usuario.");
+      interaction.reply("No se encontró ningún match para el usuario.");
     }
   } catch (error) {
     console.error("Error:", error);
-    interaction.followUp("Ocurrió un error al procesar la solicitud.");
+    interaction.reply("Ocurrió un error al procesar la solicitud.");
   }
 }

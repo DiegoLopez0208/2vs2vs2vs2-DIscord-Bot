@@ -11,7 +11,7 @@ const guildId = process.env.GUILD_ID;
 const clientId = process.env.CLIENT_ID;
 
 const commands = [];
-// Grab all the command folders from the commands directory you created earlier
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const foldersPath = path.join(__dirname, "commands");
@@ -24,7 +24,7 @@ try {
     const commandFiles = (await fs.readdir(commandsPath)).filter((file) =>
       file.endsWith(".js")
     );
-    // Grab the SlashCommandBuilder#toJSON() output of each command's data for deployment
+
     for (const file of commandFiles) {
       const filePath = path.join(commandsPath, file);
       const { data } = await import(`file://${filePath}`);
@@ -32,15 +32,12 @@ try {
     }
   }
 
-  // Construct and prepare an instance of the REST module
   const rest = new REST({ version: "10" }).setToken(token);
 
-  // and deploy your commands!
   console.log(
     `[✅] Se inició la actualización de ${commands.length} comandos de la aplicación (/).`
   );
 
-  // The put method is used to fully refresh all commands in the guild with the current set
   const data = await rest.put(
     Routes.applicationGuildCommands(clientId, guildId),
     { body: commands }
@@ -50,6 +47,5 @@ try {
     `[✅] Se recargaron exitosamente ${data.length} comandos de la aplicación (/).`
   );
 } catch (error) {
-  // And of course, make sure you catch and log any errors!
   console.error("❌", error);
 }

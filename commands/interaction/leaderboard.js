@@ -28,7 +28,6 @@ async function generateLeaderboard(teams) {
   const canvas = createCanvas(750, 600);
   const ctx = canvas.getContext("2d");
 
-  // 1. Gradiente de fondo
   const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
   gradient.addColorStop(0, "#282b30");
   gradient.addColorStop(1, "#424549");
@@ -45,10 +44,8 @@ async function generateLeaderboard(teams) {
     const rectWidth = canvas.width - 20;
     const rectHeight = 60;
 
-    // 3. Bordes suaves
     const cornerRadius = 10;
 
-    // 4. Íconos redondeados
     const iconX = rectX + 10;
     const iconY = rectY + 10;
     const iconWidth = 40;
@@ -77,14 +74,13 @@ async function generateLeaderboard(teams) {
     ctx.arcTo(rectX, rectY, rectX + rectWidth, rectY, cornerRadius);
     ctx.closePath();
 
-    // 5. Colores más vibrantes
     let bgColor;
     if (index === 0) {
-      bgColor = "gold";
+      bgColor = "#ffd700";
     } else if (index === 1) {
-      bgColor = "silver";
+      bgColor = "#c0c0c0";
     } else if (index === 2) {
-      bgColor = "peru";
+      bgColor = " #CD7F32";
     } else {
       bgColor = "#7289da";
     }
@@ -95,7 +91,6 @@ async function generateLeaderboard(teams) {
 
     const playerIcon = await loadImage(team.imageSrc);
 
-    // 4. Íconos redondeados
     ctx.save();
     ctx.beginPath();
     ctx.arc(
@@ -114,7 +109,7 @@ async function generateLeaderboard(teams) {
     const textX = rectX + 90;
     const textY = rectY + 35;
     const color = "#1e2124";
-    // Texto siempre en negro
+
     ctx.fillStyle = color;
     ctx.fillText(
       `${index + 1}. ${team.teamName} / (${team.members})`,
@@ -124,7 +119,7 @@ async function generateLeaderboard(teams) {
 
     const scoreText = `Puntaje: ${team.score}`;
     const scoreTextWidth = ctx.measureText(scoreText).width;
-    const scoreX = rectX + rectWidth - scoreTextWidth - 20; // Ajuste de posición
+    const scoreX = rectX + rectWidth - scoreTextWidth - 20;
     ctx.fillText(scoreText, scoreX, textY);
   }
 

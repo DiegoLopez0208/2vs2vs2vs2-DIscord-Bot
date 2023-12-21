@@ -28,7 +28,7 @@ export async function execute(interaction) {
 
     const collector = message.createReactionCollector({
       filter: filterReaction,
-      time: 60000, // 60 segundos de tiempo de espera
+      time: 60000,
       max: maxReactions,
       errors: ["time"],
     });
@@ -87,7 +87,7 @@ export async function execute(interaction) {
           return;
         }
 
-        const placement = 1; //participant.placement;
+        const placement = participant.placement;
         const championPick = participant.championName;
 
         new MatchSchema({

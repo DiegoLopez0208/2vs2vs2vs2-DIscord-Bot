@@ -15,8 +15,6 @@ export const data = new SlashCommandBuilder()
   .setDescription("Muestra información del equipo:");
 
 export async function execute(interaction) {
-  await interaction.reply({ content: "Informacion del Equipo:" });
-
   const { username: memberName1, username: memberName2 } = interaction.user;
 
   try {
@@ -39,29 +37,23 @@ export async function execute(interaction) {
     const avatar1 = `https://cdn.discordapp.com/avatars/${memberInfo1.discordId}/${memberInfo1.discordAvatarId}`;
     const avatar2 = `https://cdn.discordapp.com/avatars/${memberInfo2.discordId}/${memberInfo2.discordAvatarId}`;
 
-    // Crear el canvas
     const canvas = createCanvas(600, 400);
     const ctx = canvas.getContext("2d");
 
-    // Cargar las imágenes
     const teamImg = await loadImage(team.img);
     const memberImg1 = await loadImage(avatar1);
     const memberImg2 = await loadImage(avatar2);
 
-    // Dibujar la información del equipo en el canvas
-    // Fondo con gradiente menos oscuro
     const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
     gradient.addColorStop(0, "#282b30");
     gradient.addColorStop(1, "#424549");
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, 600, 400);
 
-    // Título del equipo
     ctx.fillStyle = "#ffffff";
     ctx.font = "bold 30px Roboto";
     ctx.fillText(`Equipo: ${team.name}`, 10, 40);
 
-    // Imagen del equipo con borde redondeado y sombra
     ctx.save();
     ctx.beginPath();
     ctx.arc(530, 60, 50, 0, 2 * Math.PI);
@@ -75,11 +67,9 @@ export async function execute(interaction) {
     ctx.drawImage(teamImg, 480, 10, 100, 100);
     ctx.restore();
 
-    // Dibuja la información de los integrantes con recuadro y sombra
     let yPosition = 150;
     const iconSize = 60;
 
-    // Miembro 1
     ctx.save();
     ctx.beginPath();
     ctx.arc(40, yPosition + iconSize / 2, iconSize / 2, 0, 2 * Math.PI);
@@ -97,7 +87,6 @@ export async function execute(interaction) {
     ctx.fillText(`Integrante 1: ${memberInfo1.discordTag}`, 80, yPosition + 30);
     yPosition += 80;
 
-    // Miembro 2
     ctx.save();
     ctx.beginPath();
     ctx.arc(40, yPosition + iconSize / 2, iconSize / 2, 0, 2 * Math.PI);
@@ -114,7 +103,6 @@ export async function execute(interaction) {
     ctx.font = "14px Roboto";
     ctx.fillText(`Integrante 2: ${memberInfo2.discordTag}`, 80, yPosition + 30);
 
-    // Dibuja la puntuación con sombra
     ctx.fillStyle = "#ffffff";
     ctx.font = "bold 20px Roboto";
     ctx.shadowColor = "#000000";
@@ -128,13 +116,13 @@ export async function execute(interaction) {
       .setColor("#00B0F6")
       .setImage("attachment://team-info.png");
 
-    await interaction.followUp({
+    await interaction.reply({
       embeds: [embed],
       files: [attachment],
     });
   } catch (error) {
     console.error("Error al buscar información del equipo:", error);
-    await interaction.followUp({
+    await interaction.reply({
       content: "Hubo un error al buscar la información del equipo.",
       ephemeral: true,
     });

@@ -9,19 +9,16 @@ export const data = new SlashCommandBuilder()
 
 export async function execute(interaction) {
   try {
-    // Consultar datos de MatchSchema
     const matches = await MatchSchema.find({});
-    console.log("Datos de la base de datos para MatchSchema:");
+    console.log("⭕ Datos de la base de datos para MatchSchema:");
     console.log(matches);
 
-    // Consultar datos de TeamSchema
     const teams = await TeamSchema.find({});
-    console.log("Datos de la base de datos para TeamSchema:");
+    console.log("⭕ Datos de la base de datos para TeamSchema:");
     console.log(teams);
 
-    // Consultar datos de UserSchema
     const users = await UserSchema.find({});
-    console.log("Datos de la base de datos para UserSchema:");
+    console.log("⭕ Datos de la base de datos para UserSchema:");
     console.log(users);
 
     interaction.reply({
