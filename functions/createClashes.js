@@ -23,7 +23,6 @@ const createClashes = (teamsLength, teams) => {
                 }
             }
 
-            console.log(actualClash);
             clashes.push(actualClash);
         }
     } else {

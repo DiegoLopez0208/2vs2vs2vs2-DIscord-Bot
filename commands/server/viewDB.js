@@ -1,3 +1,4 @@
+import { ClashSchema } from "../../Schemas/clashSchema.js";
 import { MatchSchema } from "../../Schemas/matchSchema.js";
 import { TeamSchema } from "../../Schemas/teamSchema.js";
 import { UserSchema } from "../../Schemas/userSchema.js";
@@ -20,6 +21,10 @@ export async function execute(interaction) {
     const users = await UserSchema.find({});
     console.log("⭕ Datos de la base de datos para UserSchema:");
     console.log(users);
+
+    const clashes = await ClashSchema.find({});
+    console.log("⭕ Datos de la base de datos para ClashSchema:");
+    console.log(clashes);
 
     interaction.reply({
       content: "Consulta la consola para ver los datos.",

@@ -7,6 +7,8 @@ import { TeamSchema } from "../../Schemas/teamSchema.js";
 import getTeams from "../../functions/getTeams.js";
 import assignPoints from "../../functions/assignPoints.js";
 
+var finish = false;
+
 export const data = new SlashCommandBuilder()
   .setName("finish")
   .setDescription("Empieza el conteo de ✅.");
@@ -142,6 +144,7 @@ export async function execute(interaction) {
         interaction.channel.send({
           content: "Reacciones terminadas",
         });
+        finish = true;
       } else {
         interaction.channel.send(
           "No se obtuvo la cantidad requerida de reacciones."
@@ -153,3 +156,9 @@ export async function execute(interaction) {
     interaction.reply("❌ Hubo un error al ejecutar el comando.");
   }
 }
+
+const isFinished = () => {
+  return finish;
+}
+
+export default isFinished;

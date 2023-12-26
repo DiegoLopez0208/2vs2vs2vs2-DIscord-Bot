@@ -8,6 +8,8 @@ const assignPoints = (placement) => {
             return 2;
         case 4:
             return 1;
+        default:
+            return 0;
     }    
 }
 

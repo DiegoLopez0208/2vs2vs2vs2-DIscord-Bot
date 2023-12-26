@@ -1,6 +1,5 @@
 "embeds": [
   {
-    "type": "rich",
     "title": `Partida 1`,
     "description": "",
     "color": 0x00FFFF,
