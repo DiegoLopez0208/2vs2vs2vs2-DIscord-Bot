@@ -1,12 +1,15 @@
-import { SlashCommandBuilder, EmbedBuilder } from "discord.js";
-import dotenv from "dotenv";
-import fetch from "node-fetch";
+import { SlashCommandBuilder } from "discord.js";
 import path from "path";
+import dotenv from "dotenv";
 import { fileURLToPath } from "url";
+import { dirname } from "path";
+import { readFile } from "fs/promises";
 
 dotenv.config();
+
+// Obtén la ruta del archivo actual
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __dirname = dirname(__filename);
 
 export const data = new SlashCommandBuilder()
   .setName("next-match")
@@ -14,15 +17,9 @@ export const data = new SlashCommandBuilder()
 
 export async function execute(interaction) {
   try {
-    const currentModuleURL = new URL(import.meta.url);
-    const currentModulePath = path.dirname(currentModuleURL.pathname);
-    const jsonFilePath = path.join(currentModulePath, "../../clashes.json");
-    const jsonFileURL = `file:${jsonFilePath}`;
-
-    console.log(jsonFileURL)
-
-    const res = await fetch(jsonFileURL);
-    const clashes = await res.json();
+    const jsonFilePath = path.join(__dirname, "/../../clashes.json");
+    const fileContent = await readFile(jsonFilePath, "utf-8");
+    const clashes = JSON.parse(fileContent);
 
     console.log(clashes);
 
