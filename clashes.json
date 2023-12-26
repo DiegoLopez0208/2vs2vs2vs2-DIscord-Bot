@@ -1,7 +1,1 @@
-[
-  { "rest": "3", "plays": ["Los Testers XD", "Los Testers XD", "1", "2"] },
-  { "rest": "2", "plays": ["Los Testers XD", "Los Testers XD", "1", "3"] },
-  { "rest": "1", "plays": ["Los Testers XD", "Los Testers XD", "2", "3"] },
-  { "rest": "Los Testers XD", "plays": ["Los Testers XD", "1", "2", "3"] },
-  { "rest": "Los Testers XD", "plays": ["Los Testers XD", "1", "2", "3"] }
-]
+[{"rest":"ANASHEI","plays":["36623","234","25526","643734"],"played":false},{"rest":"643734","plays":["36623","234","25526","ANASHEI"],"played":false},{"rest":"25526","plays":["36623","234","643734","ANASHEI"],"played":false},{"rest":"234","plays":["36623","25526","643734","ANASHEI"],"played":false},{"rest":"36623","plays":["234","25526","643734","ANASHEI"],"played":false}]

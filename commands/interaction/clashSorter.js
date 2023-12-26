@@ -11,6 +11,8 @@ export const data = new SlashCommandBuilder()
   .setDescription("Comando para crear los enfrentamientos");
 
 export async function execute(interaction) {
+  // verificar uwu xd lol jaja salu2
+  fs.unlinkSync("clashes.json");
   const teams = await TeamSchema.find();
 
   const clashes = createClashes(teams.length, teams);

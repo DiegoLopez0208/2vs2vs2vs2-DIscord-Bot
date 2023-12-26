@@ -3,6 +3,7 @@ const createClashes = (teamsLength, teams) => {
     var actualClash = {
         rest: '',
         plays: [],
+        played: false,
     };
 
     if (teamsLength % 4 == 0) {
@@ -10,9 +11,10 @@ const createClashes = (teamsLength, teams) => {
         for (let i = 0; i < 4; i++) {
             organizedNoRest(teams, actualClash)
         }
+
     } else if (teamsLength % 4 == 1) {
         for (let i = teamsLength - 1; i >= 0; i--) {
-            actualClash = { rest: '', plays: [] };
+            actualClash = { rest: '', plays: [], played: false,};
 
             actualClash.rest = teams[i].name;
             for (let j = 0; j < teamsLength; j++) {
@@ -21,6 +23,7 @@ const createClashes = (teamsLength, teams) => {
                 }
             }
 
+            console.log(actualClash);
             clashes.push(actualClash);
         }
     } else {

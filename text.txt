@@ -1,0 +1,24 @@
+"embeds": [
+  {
+    "type": "rich",
+    "title": `Partida 1`,
+    "description": "",
+    "color": 0x00FFFF,
+    "fields": [
+      {
+        "name": `Juegan\n`,
+        "value": `\nTeam 1 | Team 2\nTeam 3 | Team 4\n`
+      },
+      {
+        "name": `Descansa`,
+        "value": `Team 5`
+      }
+    ],
+    "thumbnail": {
+      "url": `https://c.tenor.com/Jc9jT66AJRwAAAAd/tenor.gif`,
+      "height": 0,
+      "width": 0
+    },
+    "url": `https://www.youtube.com/watch?v=dQw4w9WgXcQ`
+  }
+]

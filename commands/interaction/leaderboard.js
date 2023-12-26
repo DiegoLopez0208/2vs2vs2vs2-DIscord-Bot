@@ -80,7 +80,7 @@ async function generateLeaderboard(teams) {
     } else if (index === 1) {
       bgColor = "#c0c0c0";
     } else if (index === 2) {
-      bgColor = " #CD7F32";
+      bgColor = "#CD7F32";
     } else {
       bgColor = "#7289da";
     }
