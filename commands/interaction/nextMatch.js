@@ -7,7 +7,7 @@ import { readFile } from "fs/promises";
 
 dotenv.config();
 
-// Obtén la ruta del archivo actual
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 

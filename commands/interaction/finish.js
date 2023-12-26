@@ -12,7 +12,9 @@ export const data = new SlashCommandBuilder()
   .setDescription("Empieza el conteo de ✅.");
 
 export async function execute(interaction) {
+
   let teams = getTeams();
+  
   try {
     const message = await interaction.channel.send({
       content: "Conteo de ✅ (Máximo 8): ",
@@ -104,21 +106,8 @@ export async function execute(interaction) {
         });
         console.log(userTeam);
         (await teams).forEach(async (team) => {
-          console.log("placement:", placement);
-          console.log(
-            team.name,
-            userTeam.name,
-            team.name == userTeam.name,
-            !team.updated
-          );
           if (team.name == userTeam.name && !team.updated) {
-            console.log(
-              "team:",
-              team.name,
-              "sumando",
-              assignPoints(placement),
-              "puntos"
-            );
+
             await TeamSchema.updateOne(
               { name: team.name },
               { $inc: { points: assignPoints(placement) } }

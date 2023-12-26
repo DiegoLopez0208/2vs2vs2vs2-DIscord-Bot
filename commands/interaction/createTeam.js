@@ -1,5 +1,5 @@
 import pkg from "discord.js";
-const { SlashCommandBuilder } = pkg;
+const { SlashCommandBuilder  } = pkg;
 import { UserSchema } from "../../Schemas/userSchema.js";
 import "../../config/dotenv.js";
 import { TeamSchema } from "../../Schemas/teamSchema.js";
@@ -19,7 +19,11 @@ export const data = new SlashCommandBuilder()
   .addStringOption((option) =>
     option.setName("imagen_equipo").setDescription("Una foto de su equipo!")
   );
-
+  function getRandomColor() {
+  
+    const randomColor = Math.floor(Math.random()*16777215).toString(16);
+    return `#${randomColor}`;
+  }
 export async function execute(interaction) {
   const integrante1 = interaction.options.getUser("integrante1");
   const integrante2 = interaction.options.getUser("integrante2");
@@ -75,18 +79,7 @@ export async function execute(interaction) {
 
   const user1 = await UserSchema.findOne({ discordTag: integrante1.username });
   const user2 = await UserSchema.findOne({ discordTag: integrante2.username });
-  /*
-  if(!user1) {
-    return interaction.reply({content: '❌ No estas inscripto en el evento! usa /inscription para inscribirte!', ephemeral: true });
-  }
-  if(!user2) {
-    return interaction.reply({content: `❌ El usuario ${integrante2} no esta inscripto al evento! que utilice el comando /inscription para estarlo!`, ephemeral: true});
-  }
-  if(user1.teamName || user2.teamName)
-  {
-    return interaction.reply({content: '❌ Uno de los usuarios ya se encuentra en un equipo!', ephemeral: true });
-  }
-*/
+
   await UserSchema.updateOne(
     { discordTag: integrante1.username },
     { teamName: name }
@@ -96,20 +89,40 @@ export async function execute(interaction) {
     { teamName: name }
   );
 
-  const team = new TeamSchema({
-    name: name,
-    memberName1: user1.discordTag,
-    memberName2: user2.discordTag,
-    img: img,
-  });
 
-  team.save();
+  try {
+    const randomColor = getRandomColor();
+    const role = await interaction.guild.roles.create({
+      name: name,
+      color: randomColor,
+      hoist: true
+    });
 
-  const test = await TeamSchema.find();
-  console.log(test);
+    // Asignar el rol a los miembros del equipo
+    await interaction.guild.members.cache.get(integrante1.id).roles.add(role);
+    await interaction.guild.members.cache.get(integrante2.id).roles.add(role);
 
-  interaction.reply({
-    content: `El equipo "${name}" fue inscripto correctamente!`,
-    ephemeral: true,
-  });
+    const team = new TeamSchema({
+      name: name,
+      memberName1: user1.discordTag,
+      memberName2: user2.discordTag,
+      img: img,
+    });
+
+    team.save();
+
+    const test = await TeamSchema.find();
+    console.log(test);
+
+    interaction.reply({
+      content: `El equipo "${name}" fue inscripto correctamente!`,
+      ephemeral: true,
+    });
+  } catch (error) {
+    console.error('Error al crear el rol:', error);
+    return interaction.reply({
+      content: '❌ Hubo un error al crear el rol. Por favor, contacta al administrador.',
+      ephemeral: true,
+    });
+  }
 }
