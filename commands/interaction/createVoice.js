@@ -3,7 +3,6 @@ const { SlashCommandBuilder, ChannelType } = pkg;
 import { TeamSchema } from "../../Schemas/teamSchema.js";
 import "../../config/dotenv.js";
 
-const requiredUsers = 2;
 let currentUsers = 0;
 
 export const data = new SlashCommandBuilder()
@@ -32,7 +31,6 @@ export async function execute(interaction) {
     interaction.client.on("voiceStateUpdate", async (oldState, newState) => {
       handleVoiceStateUpdate(mainChannel, oldState, newState);
 
-      console.log(teams.length * 2)
       if(currentUsers == teams.length * 2)
       {
         const teamsCategory = await interaction.guild.channels.create({
@@ -41,7 +39,7 @@ export async function execute(interaction) {
         });
 
         teams.forEach(async team => {
-          const teamChannel = await interaction.guild.channels.create({
+          await interaction.guild.channels.create({
             name: `${team.name}`,
             type: ChannelType.GuildVoice,
             parent: teamsCategory.id,
