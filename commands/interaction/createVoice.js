@@ -1,5 +1,6 @@
 import pkg from "discord.js";
 const { SlashCommandBuilder, ChannelType } = pkg;
+import { TeamSchema } from "../../Schemas/teamSchema.js";
 import "../../config/dotenv.js";
 
 const requiredUsers = 2;
@@ -12,6 +13,8 @@ export const data = new SlashCommandBuilder()
 export async function execute(interaction) {
   try {
     console.log("Ejecutando el comando init-game...");
+    const teams = await TeamSchema.find();
+    console.log(teams);
 
     const mainCategory = await interaction.guild.channels.create({
       name: "General Voice",
@@ -26,32 +29,30 @@ export async function execute(interaction) {
       parent: mainCategory.id,
     });
 
-    interaction.client.on("voiceStateUpdate", (oldState, newState) => {
+    interaction.client.on("voiceStateUpdate", async (oldState, newState) => {
       handleVoiceStateUpdate(mainChannel, oldState, newState);
-    });
 
-    console.log("Iteración de miembros completa.");
-
-    const teamCategory = await interaction.guild.channels.create({
-      name: "Equipos",
-      type: ChannelType.GuildCategory,
-    });
-
-    if (currentUsers === requiredUsers) {
-      for (let i = 1; i <= 2; i++) {
-        await interaction.guild.channels.create({
-          name: `Canal ${i}`,
-          type: ChannelType.GuildVoice,
-          parent: teamCategory.id,
+      console.log(teams.length * 2)
+      if(currentUsers == teams.length * 2)
+      {
+        const teamsCategory = await interaction.guild.channels.create({
+          name: "Equipos",
+          type: ChannelType.GuildCategory,
         });
-        console.log(`Canal ${i} creado.`);
+
+        teams.forEach(async team => {
+          const teamChannel = await interaction.guild.channels.create({
+            name: `${team.name}`,
+            type: ChannelType.GuildVoice,
+            parent: teamsCategory.id,
+          });
+        })
       }
+    });
 
-      await mainChannel.delete();
-      console.log("Canal principal eliminado.");
-    }
 
-    interaction.reply("Canal principal creado.");
+
+
   } catch (error) {
     console.error("Error en execute:", error);
     interaction.reply("Hubo un error al ejecutar el comando.");
