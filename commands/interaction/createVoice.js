@@ -13,7 +13,6 @@ export async function execute(interaction) {
   try {
     console.log("Ejecutando el comando init-game...");
     const teams = await TeamSchema.find();
-    console.log(teams);
 
     const mainCategory = await interaction.guild.channels.create({
       name: "General Voice",
