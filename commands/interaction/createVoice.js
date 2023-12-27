@@ -2,7 +2,7 @@ import pkg from "discord.js";
 const { SlashCommandBuilder, ChannelType } = pkg;
 import "../../config/dotenv.js";
 
-const requiredUsers = 1;
+const requiredUsers = 2;
 let currentUsers = 0;
 
 export const data = new SlashCommandBuilder()
@@ -26,15 +26,8 @@ export async function execute(interaction) {
       parent: mainCategory.id,
     });
 
-    console.log("Canal principal creado.");
-
-    interaction.guild.members.cache.forEach((member) => {
-      if (member.voice.channel) {
-        member.voice.setChannel(mainChannel);
-        currentUsers++;
-        console.log("ready");
-        console.log(`Movido a ${member.user.tag} a ${mainChannel.name}`);
-      }
+    interaction.client.on("voiceStateUpdate", (oldState, newState) => {
+      handleVoiceStateUpdate(mainChannel, oldState, newState);
     });
 
     console.log("Iteración de miembros completa.");
@@ -59,23 +52,22 @@ export async function execute(interaction) {
     }
 
     interaction.reply("Canal principal creado.");
-
-
-    interaction.client.on("voiceStateUpdate", async (oldState, newState) => {
-      if (
-        newState.channel &&
-        newState.channel.type === "GUILD_VOICE" &&
-        newState.channel !== oldState.channel
-      ) {
-
-        await newState.member.voice.setChannel(mainChannel);
-        console.log(
-          `Movido a ${newState.member.user.tag} a ${mainChannel.name}`
-        );
-      }
-    });
   } catch (error) {
     console.error("Error en execute:", error);
     interaction.reply("Hubo un error al ejecutar el comando.");
+  }
+}
+
+function handleVoiceStateUpdate(mainChannel, oldState, newState) {
+  if (newState.channel && newState.channel === mainChannel) {
+    currentUsers++;
+    console.log(
+      `Usuario ${newState.member.user.tag} se unió a ${mainChannel.name}. Actualmente hay ${currentUsers} usuario/s.`
+    );
+  } else if (oldState.channel && oldState.channel === mainChannel) {
+    currentUsers--;
+    console.log(
+      `Usuario ${oldState.member.user.tag} salió de ${mainChannel.name}. Actualmente hay ${currentUsers} usuario/s.`
+    );
   }
 }
