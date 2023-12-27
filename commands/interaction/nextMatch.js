@@ -4,15 +4,8 @@ import { ClashSchema } from "../../Schemas/clashSchema.js";
 import isFinished from "./finish.js";
 
 dotenv.config();
-<<<<<<< HEAD
-
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-=======
 let i = 1;
 let primera = true;
->>>>>>> refs/remotes/origin/main
 
 export const data = new SlashCommandBuilder()
   .setName("next-match")
@@ -36,11 +29,11 @@ export async function execute(interaction) {
       "color": 0x00FFFF,
       "fields": [
         {
-          "name": `Juegan:\n\n`,
-          "value": `\n"${clash.plays[0]}" | "${clash.plays[1]}\n${clash.plays[2]}" | "${clash.plays[3]}"\n`
+          "name": `Juegan:`,
+          "value": `"${clash.plays[0]}" | "${clash.plays[1]}\n${clash.plays[2]}" | "${clash.plays[3]}"`
         },
         {
-          "name": `\nDescansa:`,
+          "name": `Descansa:`,
           "value": `"${clash.rest}"`
         }
       ],
@@ -54,6 +47,7 @@ export async function execute(interaction) {
         "url": "https://www.youtube.com/watch?v=iSbLHrrqmoM", 
         "icon_url": "https://cdn.discordapp.com/app-icons/1179933147710902422/90ff856fffcdb8ee9eb4d3e3530fafc3.png" 
       },
+      "timestamp": new Date(),
     })
     i++;
     primera = false;

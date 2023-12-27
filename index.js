@@ -13,11 +13,14 @@ const token = process.env.TOKEN;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const client = new Client({
+ export const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMembers,
+    GatewayIntentBits.GuildVoiceStates,
     GatewayIntentBits.GuildMessageReactions,
     GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.GuildPresences,
   ],
   partials: [Partials.Reaction],
 });

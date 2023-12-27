@@ -6,19 +6,18 @@ const createClashes = (teamsLength, teams) => {
         played: false,
     };
 
-    if (teamsLength % 4 == 0) {
+    if (teamsLength % 4 === 0) {
         actualClash.rest = null;
         for (let i = 0; i < 4; i++) {
-            organizedNoRest(teams, actualClash)
+            organizedNoRest(teams, actualClash, clashes);
         }
-
-    } else if (teamsLength % 4 == 1) {
+    } else if (teamsLength % 4 === 1) {
         for (let i = teamsLength - 1; i >= 0; i--) {
-            actualClash = { rest: '', plays: [], played: false,};
+            actualClash = { rest: '', plays: [], played: false };
 
             actualClash.rest = teams[i].name;
             for (let j = 0; j < teamsLength; j++) {
-                if (i != j) {
+                if (i !== j) {
                     actualClash.plays.push(teams[j].name);
                 }
             }
@@ -32,32 +31,35 @@ const createClashes = (teamsLength, teams) => {
     return clashes;
 };
 
-const organizedNoRest = (teams, actualClash) =>
-{
-    let status = randomizeArray(teams, actualClash);
-    
+const organizedNoRest = (teams, actualClash, clashes) => {
+    let newClash = { rest: '', plays: [], played: false };
+
+    let status = randomizeArray(teams, newClash);
+
     while (status) {
-        status = randomizeArray(teams, actualClash);
+        status = randomizeArray(teams, newClash);
     }
 
     teams.forEach((team) => {
-        actualClash.plays.push(team.name);
+        newClash.plays.push(team.name);
     });
-}
+
+    actualClash.rest = newClash.rest; // Actualizar el campo 'rest' de actualClash
+    clashes.push(newClash);
+};
 
 const randomizeArray = (array, orgArray) => {
-
     for (let i = 0; i < array.length; i++) {
         const index = Math.floor(Math.random() * (i + 1));
         [array[i], array[index]] = [array[index], array[i]];
     }
 
-    orgArray.forEach((element) => {
-        if (orgArray == element) 
-            return true;
-    });
+    // Verificar si el array de plays en orgArray ya contiene el nuevo array de plays
+    const playsExist = orgArray.plays.some((existingPlays) =>
+        JSON.stringify(existingPlays) === JSON.stringify(array)
+    );
 
-    return false;
+    return playsExist;
 };
 
 export default createClashes;
